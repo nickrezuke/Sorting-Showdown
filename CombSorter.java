@@ -2,6 +2,7 @@ public class CombSorter implements Sorter {
     public String getName() {
         //return "\u0428 Comb Sort";
 
+        //Comb is a new Emoji, so it isnt supported like the others are...
         if (!"vscode".equalsIgnoreCase(System.getenv("TERM_PROGRAM"))) {
             return Character.toString(0x1FAAE) + " Comb Sort";
         } else {

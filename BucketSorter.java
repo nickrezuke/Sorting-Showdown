@@ -2,6 +2,7 @@ public class BucketSorter implements Sorter {
     public String getName() {
         //return "\u229E Bucket Sort";
 
+        //Bucket is a new Emoji, so it isnt supported like the others are...
         if (!"vscode".equalsIgnoreCase(System.getenv("TERM_PROGRAM"))) {
             return Character.toString(0x1FAA3) + " Bucket Sort";
         } else {
