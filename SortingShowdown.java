@@ -11,10 +11,11 @@ public class SortingShowdown {
             new MergeSorter(),
             new QuickSorter(),
             new HeapSorter(),
-            new IntroSorter(),
             new CountingSorter(),
             new IntroSorter(),
-            new BucketSorter()
+            new BucketSorter(),
+            new BogoSorter(), //DO NOT USE
+            
     };
     
     public static void runRandomSorts(int listSize, int trialCount) {
@@ -81,15 +82,16 @@ public class SortingShowdown {
             double avgComparisons = 0.0;
             double avgExchanges = 0.0;
             double avgTime = 0.0;
+            boolean failed = false;
+            trialStart:
             for (int trialNum = 0; trialNum < trialCount; trialNum++) {
-                // For each trial, lets generate a new random list
+                // For each trial, lets generate a new deep copy of the list
                 int[] newArray = new int[theArray.length];
                 for (int i = 0; i < theArray.length; i++) {
-                    newArray[i] = i + 1; // To get 1,2,3,4,5,.....,1998,1999,2000 for N=2000
+                    newArray[i] = theArray[i]; // To get a deep copy
                 }
-                newArray = DataGenerator.FisherYatesShuffle(newArray);
 
-                // Lets sort the array based on the algorithm, and time it in nanoseconds
+                // Lets sort the array and time it in nanoseconds
                 long totalTime = System.nanoTime();
                 SortResult result = algorithm.sort(newArray);
                 totalTime = System.nanoTime() - totalTime;
@@ -99,7 +101,9 @@ public class SortingShowdown {
                 for (int i = 0; i < sortedArr.length - 1; i++) {
                     // If the current element is greater than the next element, it is not sorted
                     if (sortedArr[i] > sortedArr[i + 1]) {
-                        throw new IllegalStateException("\n" + algorithm.getName() + " failed to sort the list!");
+                        //throw new IllegalStateException("\n" + algorithm.getName() + " failed to sort the list!");
+                        failed = true;
+                        break trialStart;
                     }
                 }
 
@@ -109,9 +113,10 @@ public class SortingShowdown {
                 avgExchanges += (result.numberOfExchanges() - avgExchanges) / (trialNum +
                         1.0);
                 avgTime += (totalTime - avgTime) / (trialNum + 1.0);
+                //USE CUMULARIVE AVERAGE IN CASE WE USE SUPER HUGE NUMBERS TO AVOID OVERFLOW
 
                 // Only print out when the percent meaningfully changes so we're
-                // not printing the same line a million times if its slow
+                // not printing the same line over and over if its slow
                 if (trialCount < 1000 || (trialNum % Math.max(1, trialCount / 1000) == 0)) {
                     // Equivelant to \r
                     System.out.print("\u001b[2K\u001b[G");
@@ -126,13 +131,24 @@ public class SortingShowdown {
             }
             // Equivelant to \r
             System.out.print("\u001b[2K\u001b[G");
-            System.out.format(formatString + "\n", algorithm.getName(), (int) avgComparisons, (int) avgExchanges,
-                    (int) avgTime);
+            if(failed) {
+                System.out.println("| Error: " + algorithm.getName() + " failed to sort the list!" + " ".repeat(37 - algorithm.getName().length()) + "|");
+            } else {
+                System.out.format(formatString + "\n", algorithm.getName(), (int) avgComparisons, (int) avgExchanges, (int) avgTime);
+            }
+            
         }
         System.out.println("-".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
     }
 
     public static void main(String[] args) {
+        System.out.println("Running 5000 trials of lists ranged 1-2000");
+        runRandomSorts(10, 5);
+        System.out.println();
+    }
+    
+    //DEPRECIATED
+    public static void oldmain(String[] args) {
         // Get the data from the files, replace these strings with your own test
         // file(s), or pass one in as a command line argument
         String[] fileNames = {

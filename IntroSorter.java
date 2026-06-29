@@ -1,6 +1,7 @@
 public class IntroSorter implements Sorter {
     public String getName() {
-        return "???? Intro Sort";
+        //return "\u2B4D Intro Sort";
+        return Character.toString(0x1F39B) + "  Intro Sort\u3000";
     }
 
     public SortResult sort(int[] array) {

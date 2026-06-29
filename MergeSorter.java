@@ -8,7 +8,8 @@ class MergeSorter implements Sorter {
     // of times we "move" somthing into the destination array
 
     public String getName() {
-        return "\u2444 Merge Sort";
+        //return "\u2444 Merge Sort";
+        return Character.toString(0x1F91D) + " Merge Sort";
     }
 
     // The base call to start the recursive merge sort

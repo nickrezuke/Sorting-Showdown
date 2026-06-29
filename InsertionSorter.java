@@ -1,6 +1,7 @@
 class InsertionSorter implements Sorter {
     public String getName() {
-        return "\u21DF Insertion Sort";
+        //return "\u21DF Insertion Sort";
+        return Character.toString(0x1F4E5) + " Insertion Sort";
     }
 
     public SortResult sort(int[] array) {

@@ -1,7 +1,7 @@
 public class CountingSorter implements Sorter {
     public String getName() {
         //return "\u2246 Counting Sort";
-        return "📊 Counting Sort";
+        return Character.toString(0x1F4CA) + " Counting Sort";
     }
 
     public SortResult sort(int[] array) {

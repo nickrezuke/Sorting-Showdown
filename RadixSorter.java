@@ -1,6 +1,7 @@
 class RadixSorter implements Sorter {
     public String getName() {
-        return "\u2317 Radix Sort";
+        //return "\u2317 Radix Sort";
+        return Character.toString(0x1F522) + " Radix Sort";
     }
 
     // Default Sort (uses base 10 by default unless one is passed in)

@@ -5,7 +5,8 @@ class ShellSorter implements Sorter {
     private int numberOfExchanges;
 
     public String getName() {
-        return "\u2928 Shell Sort";
+        //return "\u2928 Shell Sort";
+        return Character.toString(0x1F41A) + " Shell Sort";
     }
 
     public SortResult sort(int[] array) {
