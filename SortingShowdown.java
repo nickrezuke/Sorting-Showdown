@@ -15,18 +15,14 @@ public class SortingShowdown {
             new IntroSorter(),
             new BucketSorter(),
             new EliminationSorter(),
-            new BogoSorter(), //DO NOT USE
+            //new BogoSorter(), //DO NOT USE BOGO SORT LOL
             
     };
     
     public static void runRandomSorts(int listSize, int trialCount) {
-        int[] newArray = new int[listSize];
-        for (int i = 0; i < listSize; i++) {
-            newArray[i] = i + 1; // To get 1,2,3,4,5,.....,1998,1999,2000 for N=2000
-        }
-        newArray = DataGenerator.FisherYatesShuffle(newArray);
-
-        runSortsOnArray(newArray, trialCount, "");
+        int[] sequentialArray = DataGenerator.generateSequentialArray(listSize);
+        // This sequential array will be shuffled each trial
+        runSortsOnArray(sequentialArray, trialCount, "", true);
     }
 
     public static void runSortsOnFiles(String[] fileNames, int trialCount) {
@@ -34,19 +30,18 @@ public class SortingShowdown {
             runSortsOnFile(fileNames[i], trialCount);
         }
     }
-    public static void runTestsOnFiles(String[]fileNames) {
+    public static void runSortsOnFiles(String[]fileNames) {
         runSortsOnFiles(fileNames, 1);
     }
     public static void runSortsOnFile(String fileName, int trialCount) {
         int[] theArray = DataGenerator.getArrayFromFile(fileName);
-
-        runSortsOnArray(theArray, trialCount, fileName);
+        runSortsOnArray(theArray, trialCount, fileName, false);
     }
     public static void runSortsOnFile(String fileName) {
         runSortsOnFile(fileName, 1);
     }
 
-    public static void runSortsOnArray(int[] theArray, int trialCount, String fileName) {
+    public static void runSortsOnArray(int[] passedArray, int trialCount, String fileName, boolean useRandomArray) {
         // Determine the length of the longest sorting algorithm name
         // for the calculation of the table formatting dimensions
         int maxNameLength = 0;
@@ -59,16 +54,16 @@ public class SortingShowdown {
         if(trialCount > 1) {
             System.out.print("\nAveraging over " + trialCount + " trials of ");
         } else {
-            System.out.print("\nRunning one sorting trial of ");
+            System.out.print("\nSorting the list of numbers from ");
         }
-        if(fileName.length() > 0) {
-            System.out.println("the file: " + fileName);
+        if(!useRandomArray) {
+            System.out.println("the array in file: " + fileName);
         } else {
-            if(theArray.length > 6) {
-                System.out.println("randomly shuffled lists of values ranging [1, 2, 3, ..., " 
-                + (theArray.length-2) + ", " +(theArray.length-1) + ", " + theArray.length + "]");
+            if(passedArray.length > 6) {
+                System.out.println("randomly shuffled values ranging [1, 2, 3, ..., " 
+                + (passedArray.length-2) + ", " +(passedArray.length-1) + ", " + passedArray.length + "]");
             } else {
-                System.out.println("randomly shuffled lists of values [1-" + theArray.length + "]");
+                System.out.println("randomly shuffled values [1-" + passedArray.length + "]");
             }
         }
         
@@ -87,9 +82,14 @@ public class SortingShowdown {
             trialStart:
             for (int trialNum = 0; trialNum < trialCount; trialNum++) {
                 // For each trial, lets generate a new deep copy of the list
-                int[] newArray = new int[theArray.length];
-                for (int i = 0; i < theArray.length; i++) {
-                    newArray[i] = theArray[i]; // To get a deep copy
+                int[] newArray = new int[passedArray.length];
+                for (int i = 0; i < passedArray.length; i++) {
+                    newArray[i] = passedArray[i]; // To get a deep copy
+                }
+
+                if(useRandomArray) {
+                    // Shuffle the array for this trial
+                    newArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
                 }
 
                 // Lets sort the array and time it in nanoseconds
@@ -143,12 +143,42 @@ public class SortingShowdown {
         System.out.println("-".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
     }
 
-    public static void main(String[] args) {
-        int numTrials = 5000;
-        int listSize = 2000;
+    public static void main(String[] args) throws Exception {
+        DataGenerator.generateDatasets();
 
-        System.out.println("Running " + numTrials + " trials of lists ranged 1-" + listSize);
-        runRandomSorts(listSize, numTrials);
+        // Test 1: Run 1 trial of the files Numbers_10_to_1.txt, Numbers_1_to_2000.txt, Random_2000_Numbers.txt, Shuffled_1_to_10_Numbers.txt, and Shuffled_1_to_2000_Numbers.txt
+        String[] testFiles = {"GeneratedDatasets/Numbers_10_to_1.txt", "GeneratedDatasets/Numbers_1_to_2000.txt", "GeneratedDatasets/Random_2000_Numbers.txt", "GeneratedDatasets/Shuffled_1_to_10_Numbers.txt", "GeneratedDatasets/Shuffled_1_to_2000_Numbers.txt"};
+        System.out.println("Running 1 trial of the files: " + String.join(", ", testFiles));
+        runSortsOnFiles(testFiles);
+        System.out.println();
+        
+        
+        // Test 2: Run 50 random trials of lists of size 20
+        System.out.println("Running 50 random trials of lists ranged 1-20");
+        runRandomSorts(20, 50);
+        System.out.println();
+
+
+        // Test 3: Run 1 trial of random lists size 80
+        System.out.println("Running 1 random trial of lists ranged 1-80");
+        runRandomSorts(80, 1);
+        System.out.println();
+
+
+        // Test 4: Run 20 trial of the file Numbers_1_to_2000.txt
+        System.out.println("Running 20 trials of the file: GeneratedDatasets/Numbers_1_to_2000.txt");
+        runSortsOnFile("GeneratedDatasets/Numbers_1_to_2000.txt", 20);
+        System.out.println();
+
+        // Test 5: Run 10 trials on files Random_2000_Numbers.txt and Shuffled_1_to_2000_Numbers.txt
+        String[] testFiles2 = {"GeneratedDatasets/Random_2000_Numbers.txt", "GeneratedDatasets/Shuffled_1_to_2000_Numbers.txt"};
+        System.out.println("Running 10 trials of the files: " + String.join(", ", testFiles2));
+        runSortsOnFiles(testFiles2, 10);
+        System.out.println();
+
+        // Test 6: Run 1 trial on file Numbers_1_to_2000.txt
+        System.out.println("Running 1 trial of the file: GeneratedDatasets/Numbers_1_to_2000.txt");
+        runSortsOnFile("GeneratedDatasets/Numbers_1_to_2000.txt", 1);
         System.out.println();
     }
 }

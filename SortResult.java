@@ -1,5 +1,5 @@
 // This is the object I return after a sort. Its a basically a report containing
-// the number of comparsisons and exchanges, along with the sorted list for
+// the number of comparisons and exchanges, along with the sorted list for
 // verification
 public class SortResult {
     private int[] sortedArray;
