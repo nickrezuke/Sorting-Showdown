@@ -1,7 +1,6 @@
 class SelectionSorter implements Sorter {
     public String getName() {
-        //return "\u2316 Selection Sort";
-        return Character.toString(0x1F3AF) + " Selection Sort";
+        return "Selection Sort";
     }
 
     public SortResult sort(int[] array) {

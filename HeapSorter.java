@@ -1,7 +1,6 @@
 class HeapSorter implements Sorter {
     public String getName() {
-        //return "\u22CF Heap Sort";
-        return Character.toString(0x1F4D0) + " Heap Sort";
+        return "Heap Sort";
     }
 
     public SortResult sort(int[] array) {

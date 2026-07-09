@@ -1,7 +1,6 @@
 public class IntroSorter implements Sorter {
     public String getName() {
-        //return "\u2B4D Intro Sort";
-        return Character.toString(0x1F39B) + "  Intro Sort\u3000";
+        return "Intro Sort";
     }
 
     // The threshold for switching to insertion sort
@@ -40,15 +39,22 @@ public class IntroSorter implements Sorter {
     }
 
     private static int partition(int[] arr, int low, int high) {
-        // Median-of-Three pivot selection
         int mid = low + (high - low) / 2;
         
         numberOfComparisons++;
-        if (arr[mid] < arr[low]) swap(arr, mid, low);
+        if (arr[mid] < arr[low]) {
+            swap(arr, mid, low);
+        }
+
         numberOfComparisons++;
-        if (arr[high] < arr[low]) swap(arr, high, low);
+        if (arr[high] < arr[low]) {
+            swap(arr, high, low);  
+        }
+
         numberOfComparisons++;
-        if (arr[high] < arr[mid]) swap(arr, high, mid);
+        if (arr[high] < arr[mid]) {
+            swap(arr, high, mid);
+        }
         
         // Mid is now the median, place it as pivot at high - 1
         swap(arr, mid, high - 1);
@@ -58,15 +64,22 @@ public class IntroSorter implements Sorter {
         int j = high - 1;
         
         while (true) {
-            while (true) {
+            while (true) { // Do until we find an element >= pivot
                 numberOfComparisons++;
-                if (arr[++i] >= pivot) break;
+                if (arr[++i] >= pivot) {
+                    break;
+                }
             }
-            while (true) {
+            while (true) { // Do until we find an element <= pivot
                 numberOfComparisons++;
-                if (pivot >= arr[--j]) break;
+                if (pivot >= arr[--j]) {
+                    break;
+                }
             }
-            if (i >= j) break;
+            if (i >= j) { // If the pointers have crossed, we are done partitioning
+                break;
+            }
+
             swap(arr, i, j);
         }
         swap(arr, i, high - 1);

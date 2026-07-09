@@ -1,10 +1,10 @@
 public class EliminationSorter implements Sorter {
     public String getName() {
-        return Character.toString(0x1F480) + " Elimination Sort";
+        return "Elimination Sort";
     }
 
     public SortResult sort(int[] array) {
-        //Sorts the list by eliminating out of place elements
+        //Sorts the list by eliminating any out of place elements
         int numberOfComparisons = 0;
         int numberOfExchanges = 0;
 
@@ -27,12 +27,13 @@ public class EliminationSorter implements Sorter {
 
         //Recreate an array from the remainders
         int[] sortedArray = new int[sorted.size()];
-        int size = sorted.size();
-        for(int i = 0; i < size; i++) {
+        int i = 0;
+        while(!sorted.isEmpty()) {
             sortedArray[i] = sorted.dequeue();
+            i++;
         }
         
-        // Here, the list is sorted, pay no attention to those that have caused us trouble
+        // Here, the list is sorted, pay no attention to those who may or may not have caused us trouble
         return new SortResult(sortedArray, numberOfComparisons, numberOfExchanges);
     }
 }

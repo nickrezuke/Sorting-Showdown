@@ -6,6 +6,7 @@ public class SortingShowdown {
             new CombSorter(),
             new InsertionSorter(),
             new SelectionSorter(),
+            new GnomeSorter(),
             new ShellSorter(),
             new RadixSorter(),
             new MergeSorter(),
@@ -46,8 +47,9 @@ public class SortingShowdown {
         // for the calculation of the table formatting dimensions
         int maxNameLength = 0;
         for (Sorter alg : algorithms) {
-            if (alg.getName().length() > maxNameLength) {
-                maxNameLength = alg.getName().length();
+            String stylizedName = DataGenerator.getStylizedAlgorithmName(alg);
+            if (stylizedName.length() > maxNameLength) {
+                maxNameLength = stylizedName.length();
             }
         }
 
@@ -102,7 +104,6 @@ public class SortingShowdown {
                 for (int i = 0; i < sortedArr.length - 1; i++) {
                     // If the current element is greater than the next element, it is not sorted
                     if (sortedArr[i] > sortedArr[i + 1]) {
-                        //throw new IllegalStateException("\n" + algorithm.getName() + " failed to sort the list!");
                         failed = true;
                         break trialStart;
                     }
@@ -125,7 +126,7 @@ public class SortingShowdown {
                     String progress = String.format("[%d/%d] (%d%%)", trialNum + 1,
                             trialCount,
                             (int) ((trialNum + 1) * 100.0 / trialCount));
-                    System.out.format(formatString + " %s", algorithm.getName(), (int) avgComparisons,
+                    System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), (int) avgComparisons,
                             (int) avgExchanges, (int) avgTime, progress);
                     System.out.flush();
                 }
@@ -133,10 +134,9 @@ public class SortingShowdown {
             // Equivelant to \r
             System.out.print("\u001b[2K\u001b[G");
             if(failed) {
-                String parsedString = algorithm.getName().replaceFirst("\\p{IsEmoji}","").strip();
-                System.out.println("| Error: " + parsedString + " failed to sort the list of numbers correctly!" + " ".repeat(17 - parsedString.length()) + "|");
+                System.out.println("| Error: " + algorithm.getName() + " failed to sort the list of numbers correctly!" + " ".repeat(17 - algorithm.getName().length()) + "|");
             } else {
-                System.out.format(formatString + "\n", algorithm.getName(), (int) avgComparisons, (int) avgExchanges, (int) avgTime);
+                System.out.format(formatString + "\n", DataGenerator.getStylizedAlgorithmName(algorithm), (int) avgComparisons, (int) avgExchanges, (int) avgTime);
             }
             
         }
@@ -146,39 +146,14 @@ public class SortingShowdown {
     public static void main(String[] args) throws Exception {
         DataGenerator.generateDatasets();
 
-        // Test 1: Run 1 trial of the files Numbers_10_to_1.txt, Numbers_1_to_2000.txt, Random_2000_Numbers.txt, Shuffled_1_to_10_Numbers.txt, and Shuffled_1_to_2000_Numbers.txt
-        String[] testFiles = {"GeneratedDatasets/Numbers_10_to_1.txt", "GeneratedDatasets/Numbers_1_to_2000.txt", "GeneratedDatasets/Random_2000_Numbers.txt", "GeneratedDatasets/Shuffled_1_to_10_Numbers.txt", "GeneratedDatasets/Shuffled_1_to_2000_Numbers.txt"};
-        System.out.println("Running 1 trial of the files: " + String.join(", ", testFiles));
-        runSortsOnFiles(testFiles);
-        System.out.println();
-        
-        
-        // Test 2: Run 50 random trials of lists of size 20
-        System.out.println("Running 50 random trials of lists ranged 1-20");
-        runRandomSorts(20, 50);
-        System.out.println();
+        int numberOfTrials = 100;
+        int listSize = 100;
 
-
-        // Test 3: Run 1 trial of random lists size 80
-        System.out.println("Running 1 random trial of lists ranged 1-80");
-        runRandomSorts(80, 1);
-        System.out.println();
-
-
-        // Test 4: Run 20 trial of the file Numbers_1_to_2000.txt
-        System.out.println("Running 20 trials of the file: GeneratedDatasets/Numbers_1_to_2000.txt");
-        runSortsOnFile("GeneratedDatasets/Numbers_1_to_2000.txt", 20);
-        System.out.println();
-
-        // Test 5: Run 10 trials on files Random_2000_Numbers.txt and Shuffled_1_to_2000_Numbers.txt
-        String[] testFiles2 = {"GeneratedDatasets/Random_2000_Numbers.txt", "GeneratedDatasets/Shuffled_1_to_2000_Numbers.txt"};
-        System.out.println("Running 10 trials of the files: " + String.join(", ", testFiles2));
-        runSortsOnFiles(testFiles2, 10);
-        System.out.println();
-
-        // Test 6: Run 1 trial on file Numbers_1_to_2000.txt
-        System.out.println("Running 1 trial of the file: GeneratedDatasets/Numbers_1_to_2000.txt");
-        runSortsOnFile("GeneratedDatasets/Numbers_1_to_2000.txt", 1);
+        System.out.println("Running " + numberOfTrials + " random trials of lists ranged 1-" + listSize);
+        runRandomSorts(listSize, numberOfTrials);
+        // TODO: Figure out how to skip the initial JIT warmup time...
+        // The Java Just-In-Time compiler will take a few runs (1,000?... ~15,000?? what scale???) to optimize the code, so the 
+        // first few runs will be slower than the rest. This is a known issue with Java performance testing in general.
         System.out.println();
     }
 }

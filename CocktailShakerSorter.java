@@ -3,8 +3,7 @@ class CocktailShakerSorter implements Sorter {
     // alternates bubbling down the smallest element and bubbling up the 
     // largest, as a simple means to speed up the "turtles"
     public String getName() {
-        //return "\u21C5 Cocktail Shaker Sort";
-        return Character.toString(0x1F378) + " Cocktail Shaker Sort";
+        return "Cocktail Shaker Sort";
     }
 
     public SortResult sort(int[] array) {

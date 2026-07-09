@@ -3,8 +3,7 @@ class QuickSorter implements Sorter {
     private int numberOfExchanges;
 
     public String getName() {
-        //return "\u2301 Quick Sort";
-        return Character.toString(0x1F680) + " Quick Sort";
+        return "Quick Sort";
     }
 
     private int findPivotIndex(int[] array, int low, int high) {
