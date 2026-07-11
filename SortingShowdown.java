@@ -1,21 +1,24 @@
 public class SortingShowdown {
     // These are the algorithms currently being considered by the program:
     private static Sorter[] algorithms = {
+            new ExchangeSorter(),
             new BubbleSorter(),
             new CocktailShakerSorter(),
+            new BrickSorter(),
             new CombSorter(),
             new InsertionSorter(),
             new SelectionSorter(),
             new GnomeSorter(),
             new ShellSorter(),
-            new RadixSorter(),
-            new MergeSorter(),
             new QuickSorter(),
+            new MergeSorter(),
             new HeapSorter(),
-            new CountingSorter(),
             new IntroSorter(),
             new BucketSorter(),
+            new LSDRadixSorter(),
+            new MSDRadixSorter(),
             new EliminationSorter(),
+            new CountingSorter(),
             //new BogoSorter(), //DO NOT USE BOGO SORT LOL
             
     };
@@ -76,6 +79,8 @@ public class SortingShowdown {
                 "Duration (ns)");
         System.out.println("=".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
         for (Sorter algorithm : algorithms) {
+            // First, print initial line...
+            System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-", "-", "[0/"+trialCount+"] (0%)");
             // We'll keep track of the cumulative averages
             double avgComparisons = 0.0;
             double avgExchanges = 0.0;
@@ -134,7 +139,7 @@ public class SortingShowdown {
             // Equivelant to \r
             System.out.print("\u001b[2K\u001b[G");
             if(failed) {
-                System.out.println("| Error: " + algorithm.getName() + " failed to sort the list of numbers correctly!" + " ".repeat(17 - algorithm.getName().length()) + "|");
+                System.out.println("| Error: " + algorithm.getName() + " failed to sort the list correctly!" + " ".repeat(Math.max(0, (Math.max(maxNameLength, 22)) - algorithm.getName().length() + 5)) + "|");
             } else {
                 System.out.format(formatString + "\n", DataGenerator.getStylizedAlgorithmName(algorithm), (int) avgComparisons, (int) avgExchanges, (int) avgTime);
             }
@@ -146,8 +151,8 @@ public class SortingShowdown {
     public static void main(String[] args) throws Exception {
         DataGenerator.generateDatasets();
 
-        int numberOfTrials = 100;
-        int listSize = 100;
+        int numberOfTrials = 800;
+        int listSize = 800;
 
         System.out.println("Running " + numberOfTrials + " random trials of lists ranged 1-" + listSize);
         runRandomSorts(listSize, numberOfTrials);

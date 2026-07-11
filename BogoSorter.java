@@ -1,36 +1,43 @@
 public class BogoSorter implements Sorter {
     public String getName() {
-        return Character.toString(0x1F3B2) + " Bogo Sort";
-    }
-
-    private boolean isSorted(int[] array) {
-        for(int i = 0; i < array.length - 1; i++) {
-            if(array[i] > array[i + 1]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private int[] FisherYatesShuffle(int[] array) {
-        for (int i = array.length - 1; i > 0; i--)
-        {
-            int j = (int)(Math.random() * (i + 1));
-            int temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-        }
-        return array;
+        return "Bogo Sort";
     }
 
     public SortResult sort(int[] array) {
         int numberOfComparisons = 0;
         int numberOfExchanges = 0;
 
-        while(!isSorted(array)) {
-            FisherYatesShuffle(array);
+        boolean isSorted = true;
+
+        // Actually check if it is...
+        for (int i = 0; i < array.length - 1; i++) {
+            numberOfComparisons++; // Comparison on next line
+            if (array[i] > array[i + 1]) {
+                isSorted = false;
+            }
         }
-        
+
+        while (!isSorted) {
+            // Fisher Yates Shuffle the array
+            for (int i = array.length - 1; i > 0; i--) {
+                int j = (int) (Math.random() * (i + 1));
+                int temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+                numberOfExchanges++;
+            }
+
+            // If that shuffle just so happened to sort the list, mark that down
+            isSorted = true;
+            for (int i = 0; i < array.length - 1; i++) {
+                numberOfComparisons++; // Comparison on next line
+                if (array[i] > array[i + 1]) {
+                    isSorted = false;
+                }
+            }
+        }
+
+        // Here, the list is sorted
         return new SortResult(array, numberOfComparisons, numberOfExchanges);
     }
 }

@@ -150,26 +150,30 @@ public class DataGenerator {
             case "Comb Sort":            emoji = Character.toString(0x1FAAE); leadingSpace = " "; trailingSpace = "\u3000"; break;
             case "Cocktail Shaker Sort": emoji = Character.toString(0x1F378); leadingSpace = ""; trailingSpace = ""; break;
             case "Gnome Sort":           emoji = Character.toString(0x1F9CC); leadingSpace = " "; trailingSpace = "\u3000"; break;
-            case "Insertion Sort":       emoji = Character.toString(0x1F4E5); leadingSpace = ""; trailingSpace = ""; break;
+            case "Exchange Sort":        emoji = Character.toString(0x1F4B1); leadingSpace = ""; trailingSpace = ""; break;
             case "Selection Sort":       emoji = Character.toString(0x1F3AF); leadingSpace = ""; trailingSpace = ""; break;
-            case "Merge Sort":           emoji = Character.toString(0x1F91D); leadingSpace = ""; trailingSpace = ""; break;
+            case "Brick Sort":           emoji = Character.toString(0x1F9F1); leadingSpace = ""; trailingSpace = ""; break;
             case "Shell Sort":           emoji = Character.toString(0x1F41A); leadingSpace = ""; trailingSpace = ""; break;
-            case "Radix Sort":           emoji = Character.toString(0x1F522); leadingSpace = ""; trailingSpace = ""; break;
+            case "Merge Sort":           emoji = Character.toString(0x1F91D); leadingSpace = ""; trailingSpace = ""; break;
+            case "Insertion Sort":       emoji = Character.toString(0x1F4E5); leadingSpace = ""; trailingSpace = ""; break;
+            case "MSD Radix Sort":       emoji = Character.toString(0x1F524); leadingSpace = ""; trailingSpace = ""; break;
+            case "LSD Radix Sort":       emoji = Character.toString(0x1F522); leadingSpace = ""; trailingSpace = ""; break;
             case "Heap Sort":            emoji = Character.toString(0x1F4D0); leadingSpace = ""; trailingSpace = ""; break;
             case "Quick Sort":           emoji = Character.toString(0x1F680); leadingSpace = ""; trailingSpace = ""; break;
             case "Intro Sort":           emoji = Character.toString(0x1F39B); leadingSpace = " "; trailingSpace = "\u3000"; break;
             case "Counting Sort":        emoji = Character.toString(0x1F4CA); leadingSpace = ""; trailingSpace = ""; break;
             case "Bucket Sort":          emoji = Character.toString(0x1FAA3); leadingSpace = " "; trailingSpace = "\u3000"; break;
             case "Elimination Sort":     emoji = Character.toString(0x1F480); leadingSpace = ""; trailingSpace = ""; break;
-            default:                     emoji = Character.toString(0x2754); leadingSpace = ""; trailingSpace = ""; break;
+            case "Bogo Sort":            emoji = Character.toString(0x1F3B2); leadingSpace = ""; trailingSpace = ""; break;
+            default:                     emoji = Character.toString(0x02754)+'\u200D'; leadingSpace = ""; trailingSpace = ""; break;
         }
 
         // TODO: Check if other environments need this, or if there's clearly a better solution to this...
         boolean isVSCode = "vscode".equalsIgnoreCase(System.getenv("TERM_PROGRAM"));
-        if (isVSCode || emoji.equals(Character.toString(0x1F39B))) { // Special case for Intro Sort, which is a new emoji and needs padding anyways
-            return emoji + leadingSpace + " " + baseName + trailingSpace; // Padding for VS Code
+        if (isVSCode || emoji.equals(Character.toString(0x1F39B))) { // Special case for these, which need padding anyways
+            return emoji + leadingSpace + " " + baseName + trailingSpace; // Extra Padding for new emojis in VS Code
         } else {
-            return emoji + " " + baseName; // Standard fallback
+            return emoji + " " + baseName; // Standard padding for other environments, which should be fine for most terminals
         }
     }
     

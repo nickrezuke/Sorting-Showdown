@@ -1,6 +1,6 @@
-class RadixSorter implements Sorter {
+class LSDRadixSorter implements Sorter {
     public String getName() {
-        return "Radix Sort";
+        return "LSD Radix Sort";
     }
 
     // Default Sort (uses base 10 by default unless one is passed in)
@@ -65,7 +65,8 @@ class RadixSorter implements Sorter {
                 try {
                     // Enqueue this number into a queue based on the value of the current digit
                     queues[digitValue].enqueue(array[num]);
-                    // Enqueues and Dequeues are "moves" so count this whole enque-dequeue pair as a move once we dequeue it later
+                    // Enqueues and Dequeues are "moves" so we'll count this whole 
+                    // enque-dequeue pair as a move once we dequeue it later
                 } catch (QueueFullException e) {
                     // Enqueueing failed, say so
                     String error = "Error: Queue ";
@@ -81,20 +82,12 @@ class RadixSorter implements Sorter {
                 // array in order, starting with queue 0 and going up to queue (base - 1), so
                 // that they are sorted by the current digit
                 while (!queues[queueNum].isEmpty()) {
-                    try {
-                        // Dequeue the next number from this queue and put it
-                        // back into the original array at the current index
-                        array[arrayIndex] = queues[queueNum].dequeue();
-                        arrayIndex++; // Move to the next index in the original array for the next number we put back
-                        numberOfMoves++; // Enqueue-Dequeues are "moves" so count this one here as a move
-                    } catch (QueueEmptyException e) {
-                        // Dequeueing failed, say so
-                        String error = "Error: Queue ";
-                        error = error + queueNum;
-                        error = error + " is empty.  This should never happen. - ";
-                        error = error + "Code may have logical errors if this appears.";
-                        System.out.println(error);
-                    }
+                    // Dequeue the next number from this queue and put it
+                    // back into the original array at the current index
+                    array[arrayIndex] = queues[queueNum].dequeue();
+                    arrayIndex++; // Move to the next index in the original array for the next number we put back
+                    numberOfMoves++; // Enqueue-Dequeues are "moves" so count this one here as a move
+
                 }
             }
 

@@ -1,16 +1,4 @@
 public class GnomeSorter implements Sorter {
-    // public String getName() {
-    //     // return "\u229E Gnome Sort";
-
-    //     // Troll is a new Emoji, so it isnt supported like the others are...
-    //     if (!"vscode".equalsIgnoreCase(System.getenv("TERM_PROGRAM"))) {
-    //         return Character.toString(0x1F9CC) + " Gnome Sort";
-    //     } else {
-    //         return Character.toString(0x1F9CC) + "  Gnome Sort\u3000";
-    //     }
-    //     // VS Code's Terminal handles the new emoji width on its own, but Terminal (and others) need the full-width space padding helper
-    //     // TODO: Check if other environments need this, or if there's clearly a better solution to this...
-    // }
     public String getName() {
         return "Gnome Sort";
     }
