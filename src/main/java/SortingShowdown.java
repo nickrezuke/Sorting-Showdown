@@ -5,6 +5,7 @@ public class SortingShowdown {
             new BubbleSorter(),
             new CocktailShakerSorter(),
             new BrickSorter(),
+            new PancakeSorter(),
             new CombSorter(),
             new InsertionSorter(),
             new SelectionSorter(),

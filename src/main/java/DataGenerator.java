@@ -1,7 +1,10 @@
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.util.Scanner;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class DataGenerator {
 
@@ -47,102 +50,84 @@ public class DataGenerator {
     // Running this main method will generate the datasets to the same directory as this file is running from
     public static void generateDatasets() throws Exception {
 
-        FileWriter out;
+        Path dirPath = Paths.get("GeneratedDatasets");
 
-        // If the directory GeneratedDatasets does not exist, create it
-        File dir = new File("GeneratedDatasets");
-        if (!dir.exists()) {
-            dir.mkdir();
+        if(!Files.exists(dirPath)) {
+            Files.createDirectories(dirPath);
         }
 
         // 1) numbers 1–10
-        out = new FileWriter("GeneratedDatasets/Numbers_1_to_10.txt");
-        int h = 1;
-        out.write("" + h);
-        for (int i = 2; i <= 10; i++) {
-            out.write(" " + i);
+        try (BufferedWriter out = Files.newBufferedWriter(dirPath.resolve("Ascending_Numbers_1_to_10.txt"))) {
+            out.write("1");
+            for (int i = 2; i <= 10; i++) {
+                out.write(" " + i);
+            }
         }
-        out.close();
 
         // 2) numbers 10–1
-        out = new FileWriter("GeneratedDatasets/Numbers_10_to_1.txt");
-        h = 10;
-        out.write("" + h);
-        for (int i = 9; i >= 1; i--) {
-            out.write(" " + i);
+        try (BufferedWriter out = Files.newBufferedWriter(dirPath.resolve("Descending_Numbers_10_to_1.txt"))) {
+            out.write("10");
+            for (int i = 9; i > 0; i--) {
+                out.write(" " + i);
+            }
         }
-        out.close();
 
-        // 3) numbers 1–10 (evens)
-        out = new FileWriter("GeneratedDatasets/Numbers_Even_1_to_10.txt");
-        h = 2;
-        out.write("" + h);
-        for (int i = 4; i <= 10; i += 2) {
-            out.write(" " + i);
+        // 3) numbers 1–2000
+        try (BufferedWriter out = Files.newBufferedWriter(dirPath.resolve("Ascending_Numbers_1_to_2000.txt"))) {
+            out.write("1");
+            for (int i = 2; i <= 2000; i++) {
+                out.write(" " + i);
+            }
         }
-        out.close();
 
-        // 4) numbers 1–2000
-        out = new FileWriter("GeneratedDatasets/Numbers_1_to_2000.txt");
-        h = 1;
-        out.write("" + h);
-        for (int i = 2; i <= 2000; i++) {
-            out.write(" " + i);
+        // 4) numbers 2000–1
+        try (BufferedWriter out = Files.newBufferedWriter(dirPath.resolve("Descending_Numbers_2000_to_1.txt"))) {
+            out.write("2000");
+            for (int i = 1999; i > 0; i--) {
+                out.write(" " + i);
+            }
         }
-        out.close();
 
-        // 5) numbers 2000–1
-        out = new FileWriter("GeneratedDatasets/Numbers_2000_to_1.txt");
-        h = 2000;
-        out.write("" + h);
-        for (int i = 1999; i >= 1; i--) {
-            out.write(" " + i);
+        // 5) 2000 random numbers (duplicates allowed, range of possible values 1–10,000)
+        try (BufferedWriter out = Files.newBufferedWriter(dirPath.resolve("Random_2000_Numbers.txt"))) {
+            out.write("" + (int)((Math.random() * 10000) + 1));
+            for (int i = 1999; i > 0; i--) {
+                out.write(" " + (int)((Math.random() * 10000) + 1));
+            }
         }
-        out.close();
 
-        // 6) 2000 random numbers (range of possible values 1–10,000)
-        out = new FileWriter("GeneratedDatasets/Random_2000_Numbers.txt");
-        h = (int)(Math.random() * 10000) + 1;
-        out.write("" + h);
-        for (int i = 1; i < 2000; i++) {
-            // duplicates are allowed
-            int n = (int)(Math.random() * 10000) + 1;
-            out.write(" " + n);
+        // 6) The unique numbers 1 through 10 in a random order (shuffle the numbers 1–10)
+        try (BufferedWriter out = Files.newBufferedWriter(dirPath.resolve("Shuffled_Numbers_1_to_10.txt"))) {
+            int[] array = new int[10];
+            for(int i = 1; i <= 10; i++) {
+                array[i-1] = i;
+            }
+            array = FisherYatesShuffler.shuffleArray(array).shuffledArray();
+            out.write("" + array[0]);
+            for (int i = 1; i < 10; i++) {
+                out.write(" " + array[i]);
+            }
         }
-        out.close();
 
-        //(7) The unique numbers 1 through 10 in a random order (shuffle the numbers 1–10)
-        out = new FileWriter("GeneratedDatasets/Shuffled_1_to_10_Numbers.txt");
-        int[] arr = new int[10];
-        for (int i = 0; i < 10; i++) {
-            arr[i] = i + 1;
+        // 7) The unique numbers 1 through 2000 in a random order (shuffle the numbers 1–2000)
+        try (BufferedWriter out = Files.newBufferedWriter(dirPath.resolve("Shuffled_Numbers_1_to_2000.txt"))) {
+            int[] array = new int[2000];
+            for(int i = 1; i <= 2000; i++) {
+                array[i-1] = i;
+            }
+            array = FisherYatesShuffler.shuffleArray(array).shuffledArray();
+            out.write("" + array[0]);
+            for (int i = 1; i < 2000; i++) {
+                out.write(" " + array[i]);
+            }
         }
-        arr = FisherYatesShuffler.shuffleArray(arr).shuffledArray();
-        out.write("" + arr[0]);
-        for (int i = 1; i < arr.length; i++) {
-            out.write(" " + arr[i]);
-        }
-        out.close();
-
-        //(8) The unique numbers 1 through 2000 in a random order (shuffle the numbers 1–2000)
-        out = new FileWriter("GeneratedDatasets/Shuffled_1_to_2000_Numbers.txt");
-        arr = new int[2000];
-        for (int i = 0; i < 2000; i++) {
-            arr[i] = i + 1;
-        }
-        arr = FisherYatesShuffler.shuffleArray(arr).shuffledArray();
-        out.write("" + arr[0]);
-        for (int i = 1; i < arr.length; i++) {
-            out.write(" " + arr[i]);
-        }
-        out.close();
     }
 
     public static String getStylizedAlgorithmName(Sorter algorithm) {
         String baseName = algorithm.getName(); // Will be just the name like "Bubble Sort" without any emojis or extra formatting
         String emoji;
-        String leadingSpace = "";
-        String trailingSpace = "";
+        String leadingSpace;
+        String trailingSpace;
         
         // Define the mapping of algorithm names to their corresponding emoji code points
         switch(baseName) {
@@ -165,6 +150,7 @@ public class DataGenerator {
             case "Bucket Sort":          emoji = Character.toString(0x1FAA3); leadingSpace = " "; trailingSpace = "\u3000"; break;
             case "Elimination Sort":     emoji = Character.toString(0x1F480); leadingSpace = ""; trailingSpace = ""; break;
             case "Bogo Sort":            emoji = Character.toString(0x1F3B2); leadingSpace = ""; trailingSpace = ""; break;
+            case "Pancake Sort":         emoji = Character.toString(0x1F95E); leadingSpace = ""; trailingSpace = ""; break;
             default:                     emoji = Character.toString(0x02754)+'\u200D'; leadingSpace = ""; trailingSpace = ""; break;
         }
 
