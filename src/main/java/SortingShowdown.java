@@ -12,15 +12,17 @@ public class SortingShowdown {
             new GnomeSorter(),
             new ShellSorter(),
             new QuickSorter(),
+            new BottomUpHeapSorter(),
+            new TopDownHeapSorter(),
             new MergeSorter(),
-            new HeapSorter(),
             new IntroSorter(),
             new BucketSorter(),
             new LSDRadixSorter(),
             new MSDRadixSorter(),
             new EliminationSorter(),
             new CountingSorter(),
-            //new BogoSorter(), //DO NOT USE BOGO SORT LOL
+            //new BogoSorter(), //DO NOT USE
+            //new CosmicRaySorter(), //DO NOT USE
             
     };
     
@@ -155,7 +157,6 @@ public class SortingShowdown {
         int numberOfTrials = 800;
         int listSize = 800;
 
-        System.out.println("Running " + numberOfTrials + " random trials of lists ranged 1-" + listSize);
         runRandomSorts(listSize, numberOfTrials);
         // TODO: Figure out how to skip the initial JIT warmup time...
         // The Java Just-In-Time compiler will take a few runs (1,000?... ~15,000?? what scale???) to optimize the code, so the 

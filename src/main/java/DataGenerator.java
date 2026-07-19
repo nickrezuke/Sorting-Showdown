@@ -50,7 +50,7 @@ public class DataGenerator {
     // Running this main method will generate the datasets to the same directory as this file is running from
     public static void generateDatasets() throws Exception {
 
-        Path dirPath = Paths.get("GeneratedDatasets");
+        Path dirPath = Paths.get("target", "generated-txt-datasets");
 
         if(!Files.exists(dirPath)) {
             Files.createDirectories(dirPath);
@@ -124,9 +124,11 @@ public class DataGenerator {
     }
 
     public static String getStylizedAlgorithmName(Sorter algorithm) {
-        String baseName = algorithm.getName(); // Will be just the name like "Bubble Sort" without any emojis or extra formatting
-        String emoji;
-        String leadingSpace;
+        String baseName = algorithm.getName(); // Will be just the text name like "Bubble Sort"
+
+        String emoji; // the emoji that represents this algorithm
+
+        String leadingSpace; // the extra formatting
         String trailingSpace;
         
         // Define the mapping of algorithm names to their corresponding emoji code points
@@ -143,7 +145,8 @@ public class DataGenerator {
             case "Insertion Sort":       emoji = Character.toString(0x1F4E5); leadingSpace = ""; trailingSpace = ""; break;
             case "MSD Radix Sort":       emoji = Character.toString(0x1F524); leadingSpace = ""; trailingSpace = ""; break;
             case "LSD Radix Sort":       emoji = Character.toString(0x1F522); leadingSpace = ""; trailingSpace = ""; break;
-            case "Heap Sort":            emoji = Character.toString(0x1F4D0); leadingSpace = ""; trailingSpace = ""; break;
+            case "Top Down Heap Sort":   emoji = Character.toString(0x1F4D0); leadingSpace = ""; trailingSpace = ""; break;
+            case "Bottom Up Heap Sort":  emoji = Character.toString(0x1F4CF); leadingSpace = ""; trailingSpace = ""; break;
             case "Quick Sort":           emoji = Character.toString(0x1F680); leadingSpace = ""; trailingSpace = ""; break;
             case "Intro Sort":           emoji = Character.toString(0x1F39B); leadingSpace = " "; trailingSpace = "\u3000"; break;
             case "Counting Sort":        emoji = Character.toString(0x1F4CA); leadingSpace = ""; trailingSpace = ""; break;
@@ -151,10 +154,11 @@ public class DataGenerator {
             case "Elimination Sort":     emoji = Character.toString(0x1F480); leadingSpace = ""; trailingSpace = ""; break;
             case "Bogo Sort":            emoji = Character.toString(0x1F3B2); leadingSpace = ""; trailingSpace = ""; break;
             case "Pancake Sort":         emoji = Character.toString(0x1F95E); leadingSpace = ""; trailingSpace = ""; break;
+            case "Cosmic Ray Sort":      emoji = Character.toString(0x1F320); leadingSpace = ""; trailingSpace = ""; break;
             default:                     emoji = Character.toString(0x02754)+'\u200D'; leadingSpace = ""; trailingSpace = ""; break;
         }
 
-        // TODO: Check if other environments need this, or if there's clearly a better solution to this...
+        // TODO: Check if other environments need this...?, or if there's clearly a better solution to this...
         boolean isVSCode = "vscode".equalsIgnoreCase(System.getenv("TERM_PROGRAM"));
         if (isVSCode || emoji.equals(Character.toString(0x1F39B))) { // Special case for these, which need padding anyways
             return emoji + leadingSpace + " " + baseName + trailingSpace; // Extra Padding for new emojis in VS Code

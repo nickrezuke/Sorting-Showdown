@@ -1,14 +1,14 @@
-class HeapSorter implements Sorter {
+class TopDownHeapSorter implements Sorter {
     public String getName() {
-        return "Heap Sort";
+        return "Top Down Heap Sort";
     }
 
     public SortResult sort(int[] array) {
         // This one uses my own HeapArray class, which extends abstract data type ADTHeap
         HeapArray heap = new HeapArray();
 
-        // Build the heap (bottom-up for this sorter its more efficient)
-        heap.buildHeapBottomUp(array);
+        // Build the heap (top-down for this sorter)
+        heap.buildHeapTopDown(array);
 
         // Now remove the elements from the heap one by one and put them back into the original array in order
         for(int j = array.length - 1; j >= 0; j--) {
