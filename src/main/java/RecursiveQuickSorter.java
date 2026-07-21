@@ -1,9 +1,9 @@
-class QuickSorter implements Sorter {
+class RecursiveQuickSorter implements Sorter {
     private int numberOfComparisons;
     private int numberOfExchanges;
 
     public String getName() {
-        return "Quick Sort";
+        return "Recursive Quick Sort";
     }
 
     private int findPivotIndex(int[] array, int low, int high) {
@@ -28,12 +28,11 @@ class QuickSorter implements Sorter {
                 high--;
                 numberOfComparisons++;
             }
-            // If the above while loop fails because of the pivotValue < array[high]
-            // condition, it still made a comparison that was false,
-            // specifically it performed a comparison and found that pivotValue >=
-            // array[high],
-            // meaning that the loop never enters, so we still need to count that failed
-            // comparison by adding one if that was the case.
+            // If the above while loop fails because pivotValue < array[high]
+            // it still made a comparison that was false, specifically it 
+            // performed a comparison and found that pivotValue >= array[high],
+            // meaning that the loop never enters, so we still need to count 
+            // that failed comparison by adding one if that was the case.
             if (low < high) {
                 numberOfComparisons++;
             }
@@ -45,12 +44,11 @@ class QuickSorter implements Sorter {
                 low++;
                 numberOfComparisons++;
             }
-            // If the above while loop fails because of the array[low] < pivotValue
-            // condition, it still made a comparison that was false,
-            // specifically it performed a comparison and found that array[low] >=
-            // pivotValue,
-            // meaning that the loop never enters, so we still need to count that failed
-            // comparison by adding one if that was the case.
+            // If the above while loop fails because array[low] < pivotValue
+            // it still made a comparison that was false, specifically it 
+            // performed a comparison and found that array[low] >= pivotValue, 
+            // meaning that the loop never enters, so we still need to count 
+            // that failed comparison by adding one if that was the case.
             if (low < high) {
                 numberOfComparisons++;
             }
@@ -77,11 +75,15 @@ class QuickSorter implements Sorter {
     public SortResult sort(int[] array) {
         numberOfComparisons = 0;
         numberOfExchanges = 0;
+
+        // Kick off our recursive call on the entire array
         quicksort(array, 0, array.length - 1);
+
+        // Here, the list is sorted
         return new SortResult(array, numberOfComparisons, numberOfExchanges);
     }
 
-    // The recursive call
+    // The recursive call able to call itself
     private void quicksort(int[] array, int low, int high) {
         if (low < high) {
             int pivotPoint = partition(array, low, high);

@@ -1,6 +1,7 @@
 public class SortingShowdown {
     // These are the algorithms currently being considered by the program:
     private static Sorter[] algorithms = {
+            new CycleSorter(),
             new ExchangeSorter(),
             new BubbleSorter(),
             new CocktailShakerSorter(),
@@ -9,9 +10,11 @@ public class SortingShowdown {
             new CombSorter(),
             new InsertionSorter(),
             new SelectionSorter(),
+            new DoubleSelectionSorter(),
             new GnomeSorter(),
             new ShellSorter(),
-            new QuickSorter(),
+            new IterativeQuickSorter(),
+            new RecursiveQuickSorter(),
             new BottomUpHeapSorter(),
             new TopDownHeapSorter(),
             new MergeSorter(),
