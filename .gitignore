@@ -26,8 +26,8 @@
 hs_err_pid*
 replay_pid*
 
-# Target folder (where Maven compiles code)
-target/
+# Mac DS_Store files
+**/.DS_Store
 
-# Generated Datasets
-GeneratedDatasets/
+# Target folder (where Maven compiles code & generates files)
+target/
