@@ -36,11 +36,16 @@ Maven handles all the dependencies and compiling for you. Use the following comm
 
 ### Running the Project without Maven
 
-This project can still be utilized if your computer can not use Maven.
-To run this project without Maven, consider the .java files from src/main/java seperately with this shortcut multicommand:
+This project can still be utilized if your computer doesn't have Maven.
+To run this project without Maven, consider the .java files from src/main/java seperately, and
+run this shortcut multicommand from within the base Sorting Showdown folder:
    ```
-   cd src/main/java && javac *.java && java SortingShowdown ; rm *.class && rm -rf GeneratedDatasets ; cd ../../..
+   cd src/main/java && javac *.java && java SortingShowdown ; rm *.class && rm -rf target ; cd ../../..
    ```
+This command will navigate to the correct folder, compile and run the code.  It will also 
+clean up its own build artifacts such as the leftover java .class files and target folder 
+of generated txt files of example arrays used by the program, all before navigating 
+back to the original folder.
 
 ## Testing
 

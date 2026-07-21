@@ -144,6 +144,11 @@ public class DataGenerator {
                 leadingSpace = " ";
                 trailingSpace = "\u3000";
                 break;
+            case "Cycle Sort":
+                emoji = Character.toString(0x1F501); // or 4
+                leadingSpace = "";
+                trailingSpace = "";
+                break;
             case "Comb Sort":
                 emoji = Character.toString(0x1FAAE);
                 leadingSpace = " ";
@@ -170,7 +175,7 @@ public class DataGenerator {
                 trailingSpace = "";
                 break;
             case "Double Selection Sort":
-                emoji = Character.toString(0x1F3AF);
+                emoji = Character.toString(0x1F3F9);
                 leadingSpace = "";
                 trailingSpace = "";
                 break;
@@ -215,9 +220,9 @@ public class DataGenerator {
                 trailingSpace = "";
                 break;
             case "Recursive Quick Sort":
-                emoji = Character.toString(0x1F680);
-                leadingSpace = "";
-                trailingSpace = "";
+                emoji = Character.toString(0x1FA86);
+                leadingSpace = " ";
+                trailingSpace = "\u3000";
                 break;
             case "Iterative Quick Sort":
                 emoji = Character.toString(0x1F680);
