@@ -51,8 +51,8 @@ class MSDRadixSorter implements Sorter {
         // Create queues for distribution
         ADTQueue[] queues = new ADTQueue[base]; // We will have an array of queues
         for (int i = 0; i < base; i++) {
-            queues[i] = new QueueArray(end - start); // Use an Array implementation
-            // queues[i] = new QueueLinkedList(); // Use a Linked List implementation
+            // queues[i] = new QueueArray(end - start); // Use an Array implementation
+            queues[i] = new QueueLinkedList(); // Use a Linked List implementation
         }
 
         // Arrays to track the starting index and size of each bucket in the main array

@@ -46,31 +46,40 @@ class MergeSorter implements Sorter {
     // source[lower]->source[mid] and source[mid+1]->source[upper]
     // into one combined ordered merged list "destination"
     private int[] recursiveMerge(int[] source, int[] destination, int lower, int mid, int upper) {
-        int s1 = lower;
-        int s2 = mid + 1;
-        int d = lower;
-
-        // While both still have something left, append the lowest
-        while (s1 <= mid && s2 <= upper) {
-            numberOfComparisons++; // We compared s[s1] and s[s2]
-            if (source[s1] <= source[s2]) {
-                destination[d++] = source[s1++]; // Insert and advance
+        int length = upper - lower + 1;
+        int[] tempSource = new int[length];
+        for (int i = 0; i < length; i++) {
+            tempSource[i] = destination[lower + i]; 
+        }
+    
+        int s1 = lower - lower;       // Starts at 0
+        int midOffset = mid - lower;  // End of first half in tempSource
+        int s2 = midOffset + 1;       // Start of second half in tempSource
+        int upperOffset = upper - lower;
+    
+        int d = lower; // Pointer for writing back to the real destination array
+    
+        // While both halves have elements left, append the lowest
+        while (s1 <= midOffset && s2 <= upperOffset) {
+            numberOfComparisons++;
+            if (tempSource[s1] <= tempSource[s2]) {
+                destination[d++] = tempSource[s1++];
             } else {
-                destination[d++] = source[s2++]; // Insert and advance
+                destination[d++] = tempSource[s2++];
             }
-            numberOfMoves++; // Count this insert and advance as a "move"
-        }
-
-        // Once one of them is empty, just fill in the rest with the other one
-        while (s1 <= mid) {
-            destination[d++] = source[s1++];
             numberOfMoves++;
         }
-        while (s2 <= upper) {
-            destination[d++] = source[s2++];
+    
+        // Clean up remaining elements
+        while (s1 <= midOffset) {
+            destination[d++] = tempSource[s1++];
             numberOfMoves++;
         }
+        while (s2 <= upperOffset) {
+            destination[d++] = tempSource[s2++];
+            numberOfMoves++;
+        }
+    
         return destination;
-    }
-
+    }    
 }

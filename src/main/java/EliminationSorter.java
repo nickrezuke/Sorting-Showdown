@@ -8,6 +8,10 @@ public class EliminationSorter implements Sorter {
         int numberOfComparisons = 0;
         int numberOfExchanges = 0;
 
+        if(array == null || array.length <= 1) {
+            return new SortResult(array, numberOfComparisons, numberOfExchanges);
+        }
+
         int index = 1;
         int highest = array[0];
         QueueArray sorted = new QueueArray();

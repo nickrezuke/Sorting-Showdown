@@ -157,8 +157,8 @@ public class SortingShowdown {
     public static void main(String[] args) throws Exception {
         //DataGenerator.generateDatasets();
 
-        int numberOfTrials = 100;
-        int listSize = 100;
+        int numberOfTrials = 1000;
+        int listSize = 1000;
 
         runRandomSorts(listSize, numberOfTrials);
         // TODO: Figure out how to skip the initial JIT warmup time...

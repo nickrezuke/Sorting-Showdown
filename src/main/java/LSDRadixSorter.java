@@ -10,17 +10,15 @@ class LSDRadixSorter implements Sorter {
 
     // Also allow passing in of which base we want to use
     public SortResult sort(int[] array, int base) {
+        if (array == null || array.length < 2) {
+            return new SortResult(array, 0, 0);
+        }
+
         // We will use 'array' as our master list, but now we need more arrays,
         // (specifically one for each possible digit) for queues to sort the digits
 
         int numberOfMoves = 0; // Equivelant to numExchanges in Radix Sort since we move instead of swap
         int numberOfComparisons = 0; // Radix Sort is a non-comparitive sort, we never make any comparisons
-
-        ADTQueue[] queues = new ADTQueue[base]; // We will have an array of queues
-        for (int i = 0; i < base; i++) {
-            queues[i] = new QueueArray(array.length); // Use an Array implementation
-            // queues[i] = new QueueLinkedList(); // Use a Linked List implementation
-        }
 
         int digits = 1; // This variable will keep track of the "place" we are sorting by, starting with
         // 1 = "1"s place, 2 = "10"s place, 3 = "100"s place, etc. in base "base"
@@ -54,6 +52,12 @@ class LSDRadixSorter implements Sorter {
         // original array, so, we know we need to sort by at most "maxDigits" digits to
         // ensure the whole list is sorted
         while (digits <= maxDigits) {
+            // Set up Queues
+            ADTQueue[] queues = new ADTQueue[base]; // We will have an array of queues
+            for (int i = 0; i < base; i++) {
+                queues[i] = new QueueArray(array.length); // Use an Array implementation
+                // queues[i] = new QueueLinkedList(); // Use a Linked List implementation
+            }
             // First we need to distribute the numbers in the original array into the
             // appropriate queues based on the current digit we are sorting by
             for (int num = 0; num < array.length; num++) {
@@ -65,7 +69,7 @@ class LSDRadixSorter implements Sorter {
                 try {
                     // Enqueue this number into a queue based on the value of the current digit
                     queues[digitValue].enqueue(array[num]);
-                    // Enqueues and Dequeues are "moves" so we'll count this whole 
+                    // Enqueues and Dequeues are "moves" so we'll count this whole
                     // enque-dequeue pair as a move once we dequeue it later
                 } catch (QueueFullException e) {
                     // Enqueueing failed, say so
