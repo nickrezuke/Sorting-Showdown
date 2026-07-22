@@ -129,15 +129,15 @@ public class DataGenerator {
     }
 
     public static String getStylizedAlgorithmName(Sorter algorithm) {
-        String baseName = algorithm.getName(); // Will be just the text name like "Bubble Sort"
+        String baseName = algorithm.getName(); // Will be just the text name, like "Bubble Sort"
 
-        String emoji; // the emoji that represents this algorithm
+        String emoji; // the unicode symbol that represents this algorithm
 
-        String leadingSpace; // the extra formatting
-        String trailingSpace;
+        String leadingSpace;   // the extra formatting
+        String trailingSpace;  // space for emojis
 
-        // Define the mapping of algorithm names to their corresponding emoji code
-        // points
+        // Define the mapping of algorithm names to their corresponding emoji 
+        // (https://unicode.org/emoji/charts/full-emoji-list.html)
         switch (baseName) {
             case "Bubble Sort":
                 emoji = Character.toString(0x1FAE7);
@@ -145,7 +145,7 @@ public class DataGenerator {
                 trailingSpace = "\u3000";
                 break;
             case "Cycle Sort":
-                emoji = Character.toString(0x1F501); // or 4
+                emoji = Character.toString(0x1F501); // or 0x1F504?
                 leadingSpace = "";
                 trailingSpace = "";
                 break;
