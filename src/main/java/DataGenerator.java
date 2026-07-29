@@ -133,10 +133,10 @@ public class DataGenerator {
 
         String emoji; // the unicode symbol that represents this algorithm
 
-        String leadingSpace;   // the extra formatting
-        String trailingSpace;  // space for emojis
+        String leadingSpace; // the extra formatting
+        String trailingSpace; // space for emojis
 
-        // Define the mapping of algorithm names to their corresponding emoji 
+        // Define the mapping of algorithm names to their corresponding emoji
         // (https://unicode.org/emoji/charts/full-emoji-list.html)
         switch (baseName) {
             case "Bubble Sort":
@@ -195,6 +195,11 @@ public class DataGenerator {
                 trailingSpace = "";
                 break;
             case "Insertion Sort":
+                emoji = Character.toString(0x1F4E5);
+                leadingSpace = "";
+                trailingSpace = "";
+                break;
+            case "Binary Insertion Sort":
                 emoji = Character.toString(0x1F4E5);
                 leadingSpace = "";
                 trailingSpace = "";

@@ -1,34 +1,70 @@
 public class SortingShowdown {
     // These are the algorithms currently being considered by the program:
     private static Sorter[] algorithms = {
+            new DefaultJavaSorter(),
             new CycleSorter(),
             new ExchangeSorter(),
+            new BlockSorter(),
+            new OriginalBlockSorter(),
+            new WikiSorter(),
             new BubbleSorter(),
             new CocktailShakerSorter(),
             new BrickSorter(),
+            new StrandSorter(),
             new PancakeSorter(),
             new CombSorter(),
             new InsertionSorter(),
+            new BinaryInsertionSorter(),
+            new FlashSorter(),
             new SelectionSorter(),
             new DoubleSelectionSorter(),
             new GnomeSorter(),
+            new GnomeMergeSorter(),
+            new CircleSorter(),
+            new TreeSorter(),
             new ShellSorter(),
+            new ProxmapSorter(),
             new IterativeQuickSorter(),
             new RecursiveQuickSorter(),
+            new LinkedListQuickSorter(),
+            new DualPivotQuickSorter(),
+            new PDQSorter(),
+            new SampleSorter(),
             new BottomUpHeapSorter(),
             new TopDownHeapSorter(),
+            new WeakHeapSorter(),
+            new TernaryHeapSorter(),
+            new PoplarSorter(),
             new MergeSorter(),
+            new InPlaceMergeSorter(),
+            new RotateMergeSorter(),
+            new GrailSorter(),
             new IntroSorter(),
+            new TimSorter(),
+            new ShatterSorter(),
+            new SpreadSorter(),
+            new WeaveSorter(),
             new BucketSorter(),
             new LSDRadixSorter(),
             new MSDRadixSorter(),
+            new AmericanFlagSorter(),
+            new PatienceSorter(),
+            new PairwiseNetworkSorter(),
+            new IterativeBitonicSorter(),
+            new RecursiveBitonicSorter(),
+            new AlternateBitonicSorter(),
+            new QuadSorter(),
+            new SmoothSorter(),
             new EliminationSorter(),
             new CountingSorter(),
-            //new BogoSorter(), //DO NOT USE
-            //new CosmicRaySorter(), //DO NOT USE
-            
+            new GravitySorter(),
+            new SlowSorter(), // PLEASE DO NOT USE
+            new StoogeSorter(), // PLEASE DO NOT USE
+            new SleepSorter(), // PLEASE DO NOT USE
+            // new BogoSorter(), // PLEASE DO NOT USE
+            // new CosmicRaySorter(), // PLEASE DO NOT USE
     };
-    
+
     public static void runRandomSorts(int listSize, int trialCount) {
         int[] sequentialArray = DataGenerator.generateSequentialArray(listSize);
         // This sequential array will be shuffled each trial
@@ -36,17 +72,20 @@ public class SortingShowdown {
     }
 
     public static void runSortsOnFiles(String[] fileNames, int trialCount) {
-        for(int i = 0; i < fileNames.length; i++) {
+        for (int i = 0; i < fileNames.length; i++) {
             runSortsOnFile(fileNames[i], trialCount);
         }
     }
-    public static void runSortsOnFiles(String[]fileNames) {
+
+    public static void runSortsOnFiles(String[] fileNames) {
         runSortsOnFiles(fileNames, 1);
     }
+
     public static void runSortsOnFile(String fileName, int trialCount) {
         int[] theArray = DataGenerator.getArrayFromFile(fileName);
         runSortsOnArray(theArray, trialCount, fileName, false);
     }
+
     public static void runSortsOnFile(String fileName) {
         runSortsOnFile(fileName, 1);
     }
@@ -62,45 +101,45 @@ public class SortingShowdown {
             }
         }
 
-        if(trialCount > 1) {
+        if (trialCount > 1) {
             System.out.print("\nAveraging over " + trialCount + " trials of ");
         } else {
             System.out.print("\nSorting the list of numbers from ");
         }
-        if(!useRandomArray) {
+        if (!useRandomArray) {
             System.out.println("the array in file: " + fileName);
         } else {
-            if(passedArray.length > 6) {
-                System.out.println("randomly shuffled values ranging [1, 2, 3, ..., " 
-                + (passedArray.length-2) + ", " +(passedArray.length-1) + ", " + passedArray.length + "]");
+            if (passedArray.length > 6) {
+                System.out.println("randomly shuffled values ranging [1, 2, 3, ..., "
+                        + (passedArray.length - 2) + ", " + (passedArray.length - 1) + ", " + passedArray.length + "]");
             } else {
                 System.out.println("randomly shuffled values [1-" + passedArray.length + "]");
             }
         }
-        
+
         String formatString = "| %-" + Math.max(maxNameLength, 22) + "s | %13s | %11s | %13s |";
-        System.out.println("-".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2)); 
+        System.out.println("-".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
         // Represents the Horizontal bar for this table
         System.out.format(formatString + "\n", "Sorting Algorithm Name", "# Comparisons", "# Exchanges",
                 "Duration (ns)");
         System.out.println("=".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
         for (Sorter algorithm : algorithms) {
             // First, print initial line...
-            System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-", "-", "[0/"+trialCount+"] (0%)");
+            System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-", "-",
+                    "[0/" + trialCount + "] (0%)");
             // We'll keep track of the cumulative averages
             double avgComparisons = 0.0;
             double avgExchanges = 0.0;
             double avgTime = 0.0;
             boolean failed = false;
-            trialStart:
-            for (int trialNum = 0; trialNum < trialCount; trialNum++) {
+            trialStart: for (int trialNum = 0; trialNum < trialCount; trialNum++) {
                 // For each trial, lets generate a new deep copy of the list
                 int[] newArray = new int[passedArray.length];
                 for (int i = 0; i < passedArray.length; i++) {
                     newArray[i] = passedArray[i]; // To get a deep copy
                 }
 
-                if(useRandomArray) {
+                if (useRandomArray) {
                     // Shuffle the array for this trial
                     newArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
                 }
@@ -126,7 +165,7 @@ public class SortingShowdown {
                 avgExchanges += (result.numberOfExchanges() - avgExchanges) / (trialNum +
                         1.0);
                 avgTime += (totalTime - avgTime) / (trialNum + 1.0);
-                //USE CUMULARIVE AVERAGE IN CASE WE USE SUPER HUGE NUMBERS TO AVOID OVERFLOW
+                // USE CUMULARIVE AVERAGE IN CASE WE USE SUPER HUGE NUMBERS TO AVOID OVERFLOW
 
                 // Only print out when the percent meaningfully changes so we're
                 // not printing the same line over and over if its slow
@@ -137,33 +176,39 @@ public class SortingShowdown {
                     String progress = String.format("[%d/%d] (%d%%)", trialNum + 1,
                             trialCount,
                             (int) ((trialNum + 1) * 100.0 / trialCount));
-                    System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), (int) avgComparisons,
+                    System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm),
+                            (int) avgComparisons,
                             (int) avgExchanges, (int) avgTime, progress);
                     System.out.flush();
                 }
             }
             // Equivelant to \r
             System.out.print("\u001b[2K\u001b[G");
-            if(failed) {
-                System.out.println("| Error: " + algorithm.getName() + " failed to sort the list correctly!" + " ".repeat(Math.max(0, (Math.max(maxNameLength, 22)) - algorithm.getName().length() + 5)) + "|");
+            if (failed) {
+                System.out.println("| Error: " + algorithm.getName() + " failed to sort the list correctly!"
+                        + " ".repeat(Math.max(0, (Math.max(maxNameLength, 22)) - algorithm.getName().length() + 5))
+                        + "|");
             } else {
-                System.out.format(formatString + "\n", DataGenerator.getStylizedAlgorithmName(algorithm), (int) avgComparisons, (int) avgExchanges, (int) avgTime);
+                System.out.format(formatString + "\n", DataGenerator.getStylizedAlgorithmName(algorithm),
+                        (int) avgComparisons, (int) avgExchanges, (int) avgTime);
             }
-            
+
         }
         System.out.println("-".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
     }
 
     public static void main(String[] args) throws Exception {
-        //DataGenerator.generateDatasets();
+        // DataGenerator.generateDatasets();
 
-        int numberOfTrials = 1000;
-        int listSize = 1000;
+        int numberOfTrials = 100;
+        int listSize = 100;
 
         runRandomSorts(listSize, numberOfTrials);
         // TODO: Figure out how to skip the initial JIT warmup time...
-        // The Java Just-In-Time compiler will take a few runs (1,000?... ~15,000?? what scale???) to optimize the code, so the 
-        // first few runs will be slower than the rest. This is a known issue with Java performance testing in general.
+        // The Java Just-In-Time compiler will take a few runs (1,000?... ~15,000?? what
+        // scale???) to optimize the code, so the
+        // first few runs will be slower than the rest. This is a known issue with Java
+        // performance testing in general.
         System.out.println();
     }
 }
