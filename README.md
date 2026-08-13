@@ -1,5 +1,7 @@
 # Sorting Showdown
 
+<img width="1792" height="904" alt="SortingShowdown" src="https://github.com/user-attachments/assets/4a75c9eb-9645-4eb8-aedb-9af8d4fb866c" />
+
 Sorting Showdown is a Java-based application designed to benchmark and compare the performance of various sorting algorithms. 
 
 ## Prerequisites
