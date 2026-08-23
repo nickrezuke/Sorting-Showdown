@@ -102,7 +102,7 @@ public class DataGeneratorTest {
         };
 
         String stylized = DataGenerator.getStylizedAlgorithmName(unknownSorter);
-        String fallbackEmoji = Character.toString(0x02754) + '\u200D'; // The (❓) that appears as default
+        String fallbackEmoji = Character.toString(0x02754) + '\u200D'; // The (?) that appears as default
         
         Assertions.assertTrue(stylized.startsWith(fallbackEmoji), "Unknown algorithms should fall back to the question mark emoji.");
     }

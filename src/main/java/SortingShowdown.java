@@ -1,69 +1,73 @@
 public class SortingShowdown {
     // These are the algorithms currently being considered by the program:
-    private static Sorter[] algorithms = {
-            new DefaultJavaSorter(),
-            new CycleSorter(),
-            new ExchangeSorter(),
-            new BlockSorter(),
-            new OriginalBlockSorter(),
-            new WikiSorter(),
-            new BubbleSorter(),
-            new CocktailShakerSorter(),
-            new BrickSorter(),
-            new StrandSorter(),
-            new PancakeSorter(),
-            new CombSorter(),
-            new InsertionSorter(),
-            new BinaryInsertionSorter(),
-            new FlashSorter(),
-            new SelectionSorter(),
-            new DoubleSelectionSorter(),
-            new GnomeSorter(),
-            new GnomeMergeSorter(),
-            new CircleSorter(),
-            new TreeSorter(),
-            new ShellSorter(),
-            new ProxmapSorter(),
-            new IterativeQuickSorter(),
-            new RecursiveQuickSorter(),
-            new LinkedListQuickSorter(),
-            new DualPivotQuickSorter(),
-            new PDQSorter(),
-            new SampleSorter(),
-            new BottomUpHeapSorter(),
-            new TopDownHeapSorter(),
-            new WeakHeapSorter(),
-            new TernaryHeapSorter(),
-            new PoplarSorter(),
-            new MergeSorter(),
-            new InPlaceMergeSorter(),
-            new RotateMergeSorter(),
-            new GrailSorter(),
-            new IntroSorter(),
-            new TimSorter(),
-            new ShatterSorter(),
-            new SpreadSorter(),
-            new WeaveSorter(),
-            new BucketSorter(),
-            new LSDRadixSorter(),
-            new MSDRadixSorter(),
-            new AmericanFlagSorter(),
-            new PatienceSorter(),
-            new PairwiseNetworkSorter(),
-            new IterativeBitonicSorter(),
-            new RecursiveBitonicSorter(),
-            new AlternateBitonicSorter(),
-            new QuadSorter(),
-            new SmoothSorter(),
-            new EliminationSorter(),
-            new CountingSorter(),
-            new GravitySorter(),
-            new SlowSorter(), // PLEASE DO NOT USE
-            new StoogeSorter(), // PLEASE DO NOT USE
-            new SleepSorter(), // PLEASE DO NOT USE
-            // new BogoSorter(), // PLEASE DO NOT USE
-            // new CosmicRaySorter(), // PLEASE DO NOT USE
-    };
+    public static Sorter[] getAllAlgorithms() {
+        return new Sorter[] {
+                new DefaultJavaSorter(),
+                new CycleSorter(),
+                new ExchangeSorter(),
+                new BlockSorter(),
+                new OriginalBlockSorter(),
+                new WikiSorter(),
+                new BubbleSorter(),
+                new CocktailShakerSorter(),
+                new BrickSorter(),
+                new StrandSorter(),
+                new PancakeSorter(),
+                new CombSorter(),
+                new InsertionSorter(),
+                new BinaryInsertionSorter(),
+                new FlashSorter(),
+                new SelectionSorter(),
+                new DoubleSelectionSorter(),
+                new GnomeSorter(),
+                new GnomeMergeSorter(),
+                new CircleSorter(),
+                new TreeSorter(),
+                new ShellSorter(),
+                new ProxmapSorter(),
+                new IterativeQuickSorter(),
+                new RecursiveQuickSorter(),
+                new LinkedListQuickSorter(),
+                new DualPivotQuickSorter(),
+                new PDQSorter(),
+                new SampleSorter(),
+                new BottomUpHeapSorter(),
+                new TopDownHeapSorter(),
+                new WeakHeapSorter(),
+                new TernaryHeapSorter(),
+                new PoplarSorter(),
+                new MergeSorter(),
+                new InPlaceMergeSorter(),
+                new RotateMergeSorter(),
+                new GrailSorter(),
+                new IntroSorter(),
+                new TimSorter(),
+                new ShatterSorter(),
+                new SpreadSorter(),
+                new WeaveSorter(),
+                new BucketSorter(),
+                new LSDRadixSorter(),
+                new MSDRadixSorter(),
+                new AmericanFlagSorter(),
+                new PatienceSorter(),
+                new PairwiseNetworkSorter(),
+                new IterativeBitonicSorter(),
+                new RecursiveBitonicSorter(),
+                new AlternateBitonicSorter(),
+                new QuadSorter(),
+                new SmoothSorter(),
+                new EliminationSorter(),
+                new CountingSorter(),
+                new GravitySorter(),
+                // new SlowSorter(), // PLEASE DO NOT USE
+                // new StoogeSorter(), // PLEASE DO NOT USE
+                // new SleepSorter(), // PLEASE DO NOT USE
+                // new BogoSorter(), // PLEASE DO NOT USE
+                // new CosmicRaySorter(), // PLEASE DO NOT USE
+        };
+    }
+
+    private static Sorter[] algorithms = getAllAlgorithms();
 
     public static void runRandomSorts(int listSize, int trialCount) {
         int[] sequentialArray = DataGenerator.generateSequentialArray(listSize);
@@ -91,6 +95,8 @@ public class SortingShowdown {
     }
 
     public static void runSortsOnArray(int[] passedArray, int trialCount, String fileName, boolean useRandomArray) {
+        int warmupTrials = 10000;
+
         // Determine the length of the longest sorting algorithm name
         // for the calculation of the table formatting dimensions
         int maxNameLength = 0;
@@ -124,7 +130,27 @@ public class SortingShowdown {
                 "Duration (ns)");
         System.out.println("=".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
         for (Sorter algorithm : algorithms) {
-            // First, print initial line...
+            // First, warmup
+            System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-", "-",
+                    "[Warming up JIT Compiler] (0%)");
+            for (int w = 0; w < warmupTrials; w++) {
+                int[] warmupArray = new int[passedArray.length];
+                for (int i = 0; i < passedArray.length; i++) {
+                    warmupArray[i] = passedArray[i];
+                }
+                if (useRandomArray) {
+                    warmupArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
+                }
+                algorithm.sort(warmupArray);
+                System.out.print("\u001b[2K\u001b[G");
+
+                System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-",
+                        "-",
+                        "[Warming up JIT Compiler] (" + (int) (w * 100.0 / warmupTrials) + "%)");
+            }
+            System.out.print("\u001b[2K\u001b[G");
+
+            // Then, print initial actual run line...
             System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-", "-",
                     "[0/" + trialCount + "] (0%)");
             // We'll keep track of the cumulative averages
@@ -198,17 +224,11 @@ public class SortingShowdown {
     }
 
     public static void main(String[] args) throws Exception {
-        // DataGenerator.generateDatasets();
-
-        int numberOfTrials = 100;
-        int listSize = 100;
+        int numberOfTrials = 1000;
+        int listSize = 500;
 
         runRandomSorts(listSize, numberOfTrials);
-        // TODO: Figure out how to skip the initial JIT warmup time...
-        // The Java Just-In-Time compiler will take a few runs (1,000?... ~15,000?? what
-        // scale???) to optimize the code, so the
-        // first few runs will be slower than the rest. This is a known issue with Java
-        // performance testing in general.
+
         System.out.println();
     }
 }
