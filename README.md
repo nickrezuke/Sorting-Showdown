@@ -6,8 +6,8 @@ Sorting Showdown is a Java-based application designed to benchmark and compare t
 
 ## Prerequisites
 
-You will need some JDK ( I recommend at least version 8)
-To run the project, Apache Maven is preferred.  The tests use JUnit.
+You will need **Java 8 or higher** (I had originally built the project with Java 25 but decided to lower that, so forgive me for / tell me of any compatability issues).
+To run the project, Apache Maven is preferred. The tests use JUnit 5.
 
 ## Download and Setup
 
@@ -36,10 +36,10 @@ Maven handles all the dependencies and compiling for you. Use the following comm
    mvn exec:java
    ```
 
-### Running the Project without Maven
+## Running the Project (without Maven)
 
 This project can still be utilized if your computer doesn't have Maven.
-To run this project without Maven, consider the .java files from src/main/java seperately, and
+To run this project without Maven, consider the .java files from src/main/java separately, and
 run this shortcut multicommand from within the base Sorting Showdown folder:
    ```
    cd src/main/java && javac *.java && java SortingShowdown ; rm *.class && rm -rf target ; cd ../../..

@@ -88,7 +88,7 @@ public class DataGeneratorTest {
         String stylized = DataGenerator.getStylizedAlgorithmName(mockBubble);
         
         // Bubble sort emoji is 0x1FAE7 (🫧)
-        String expectedEmoji = Character.toString(0x1FAE7);
+        String expectedEmoji = String.valueOf(Character.toChars(0x1FAE7));
         Assertions.assertTrue(stylized.contains(expectedEmoji), "Stylized name should include the correct emoji.");
         Assertions.assertTrue(stylized.contains("Bubble Sort"), "Stylized name should include the base algorithm name.");
     }
@@ -102,7 +102,7 @@ public class DataGeneratorTest {
         };
 
         String stylized = DataGenerator.getStylizedAlgorithmName(unknownSorter);
-        String fallbackEmoji = Character.toString(0x02754) + '\u200D'; // The (?) that appears as default
+        String fallbackEmoji = String.valueOf(Character.toChars(0x02754)) + '\u200D'; // The (?) that appears as default
         
         Assertions.assertTrue(stylized.startsWith(fallbackEmoji), "Unknown algorithms should fall back to the question mark emoji.");
     }

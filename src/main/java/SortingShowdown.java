@@ -95,135 +95,169 @@ public class SortingShowdown {
     }
 
     public static void runSortsOnArray(int[] passedArray, int trialCount, String fileName, boolean useRandomArray) {
-        int warmupTrials = 10000;
+        System.out.print("\u001b[?25l"); // Hide cursor
 
-        // Determine the length of the longest sorting algorithm name
-        // for the calculation of the table formatting dimensions
-        int maxNameLength = 0;
-        for (Sorter alg : algorithms) {
-            String stylizedName = DataGenerator.getStylizedAlgorithmName(alg);
-            if (stylizedName.length() > maxNameLength) {
-                maxNameLength = stylizedName.length();
+        try {
+
+            int warmupTrials = 10000;
+
+            // Determine the length of the longest sorting algorithm name
+            // for the calculation of the table formatting dimensions
+            int maxNameLength = 0;
+            for (Sorter alg : algorithms) {
+                String stylizedName = DataGenerator.getStylizedAlgorithmName(alg);
+                if (stylizedName.length() > maxNameLength) {
+                    maxNameLength = stylizedName.length();
+                }
             }
-        }
 
-        if (trialCount > 1) {
-            System.out.print("\nAveraging over " + trialCount + " trials of ");
-        } else {
-            System.out.print("\nSorting the list of numbers from ");
-        }
-        if (!useRandomArray) {
-            System.out.println("the array in file: " + fileName);
-        } else {
-            if (passedArray.length > 6) {
-                System.out.println("randomly shuffled values ranging [1, 2, 3, ..., "
-                        + (passedArray.length - 2) + ", " + (passedArray.length - 1) + ", " + passedArray.length + "]");
+            if (trialCount > 1) {
+                System.out.print("\nAveraging over " + trialCount + " trials of ");
             } else {
-                System.out.println("randomly shuffled values [1-" + passedArray.length + "]");
+                System.out.print("\nSorting the list of numbers from ");
             }
-        }
-
-        String formatString = "| %-" + Math.max(maxNameLength, 22) + "s | %13s | %11s | %13s |";
-        System.out.println("-".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
-        // Represents the Horizontal bar for this table
-        System.out.format(formatString + "\n", "Sorting Algorithm Name", "# Comparisons", "# Exchanges",
-                "Duration (ns)");
-        System.out.println("=".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
-        for (Sorter algorithm : algorithms) {
-            // First, warmup
-            System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-", "-",
-                    "[Warming up JIT Compiler] (0%)");
-            for (int w = 0; w < warmupTrials; w++) {
-                int[] warmupArray = new int[passedArray.length];
-                for (int i = 0; i < passedArray.length; i++) {
-                    warmupArray[i] = passedArray[i];
+            if (!useRandomArray) {
+                System.out.println("the array in file: " + fileName);
+            } else {
+                if (passedArray.length > 6) {
+                    System.out.println("randomly shuffled values ranging [1, 2, 3, ..., "
+                            + (passedArray.length - 2) + ", " + (passedArray.length - 1) + ", " + passedArray.length
+                            + "]");
+                } else {
+                    System.out.println("randomly shuffled values [1-" + passedArray.length + "]");
                 }
-                if (useRandomArray) {
-                    warmupArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
-                }
-                algorithm.sort(warmupArray);
-                System.out.print("\u001b[2K\u001b[G");
+            }
 
+            String formatString = "| %-" + Math.max(maxNameLength, 22) + "s | %13s | %11s | %13s |";
+            int tableWidth = 2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2;
+            for (int i = 0; i < tableWidth; i++) {
+                System.out.print("-");
+            }
+            System.out.println(); // Represents the Horizontal bar for this table
+            System.out.format(formatString + "\n", "Sorting Algorithm Name", "# Comparisons", "# Exchanges",
+                    "Duration (ns)");
+            for (int i = 0; i < tableWidth; i++) {
+                System.out.print("=");
+            }
+            System.out.println();
+            for (Sorter algorithm : algorithms) {
+                // First, warmup
                 System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-",
                         "-",
-                        "[Warming up JIT Compiler] (" + (int) (w * 100.0 / warmupTrials) + "%)");
-            }
-            System.out.print("\u001b[2K\u001b[G");
-
-            // Then, print initial actual run line...
-            System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-", "-",
-                    "[0/" + trialCount + "] (0%)");
-            // We'll keep track of the cumulative averages
-            double avgComparisons = 0.0;
-            double avgExchanges = 0.0;
-            double avgTime = 0.0;
-            boolean failed = false;
-            trialStart: for (int trialNum = 0; trialNum < trialCount; trialNum++) {
-                // For each trial, lets generate a new deep copy of the list
-                int[] newArray = new int[passedArray.length];
-                for (int i = 0; i < passedArray.length; i++) {
-                    newArray[i] = passedArray[i]; // To get a deep copy
-                }
-
-                if (useRandomArray) {
-                    // Shuffle the array for this trial
-                    newArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
-                }
-
-                // Lets sort the array and time it in nanoseconds
-                long totalTime = System.nanoTime();
-                SortResult result = algorithm.sort(newArray);
-                totalTime = System.nanoTime() - totalTime;
-
-                // Double Check the array is sorted correctly
-                int[] sortedArr = result.sortedArray();
-                for (int i = 0; i < sortedArr.length - 1; i++) {
-                    // If the current element is greater than the next element, it is not sorted
-                    if (sortedArr[i] > sortedArr[i + 1]) {
-                        failed = true;
-                        break trialStart;
+                        "[Warming up JIT Compiler] (0%)");
+                for (int w = 0; w < warmupTrials; w++) {
+                    int[] warmupArray = new int[passedArray.length];
+                    for (int i = 0; i < passedArray.length; i++) {
+                        warmupArray[i] = passedArray[i];
                     }
-                }
-
-                // Update averages using cumulative average
-                avgComparisons += (result.numberOfComparisons() - avgComparisons) / (trialNum
-                        + 1.0);
-                avgExchanges += (result.numberOfExchanges() - avgExchanges) / (trialNum +
-                        1.0);
-                avgTime += (totalTime - avgTime) / (trialNum + 1.0);
-                // USE CUMULARIVE AVERAGE IN CASE WE USE SUPER HUGE NUMBERS TO AVOID OVERFLOW
-
-                // Only print out when the percent meaningfully changes so we're
-                // not printing the same line over and over if its slow
-                if (trialCount < 1000 || (trialNum % Math.max(1, trialCount / 1000) == 0)) {
-                    // Equivelant to \r
+                    if (useRandomArray) {
+                        warmupArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
+                    }
+                    algorithm.sort(warmupArray);
                     System.out.print("\u001b[2K\u001b[G");
 
-                    String progress = String.format("[%d/%d] (%d%%)", trialNum + 1,
-                            trialCount,
-                            (int) ((trialNum + 1) * 100.0 / trialCount));
-                    System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm),
-                            (int) avgComparisons,
-                            (int) avgExchanges, (int) avgTime, progress);
-                    System.out.flush();
+                    System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-",
+                            "-",
+                            "[Warming up JIT Compiler] (" + (int) (w * 100.0 / warmupTrials) + "%)");
                 }
-            }
-            // Equivelant to \r
-            System.out.print("\u001b[2K\u001b[G");
-            if (failed) {
-                System.out.println("| Error: " + algorithm.getName() + " failed to sort the list correctly!"
-                        + " ".repeat(Math.max(0, (Math.max(maxNameLength, 22)) - algorithm.getName().length() + 5))
-                        + "|");
-            } else {
-                System.out.format(formatString + "\n", DataGenerator.getStylizedAlgorithmName(algorithm),
-                        (int) avgComparisons, (int) avgExchanges, (int) avgTime);
-            }
+                System.out.print("\u001b[2K\u001b[G");
 
+                // Then, print initial actual run line...
+                System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm), "-", "-",
+                        "-",
+                        "[0/" + trialCount + "] (0%)");
+                // We'll keep track of the cumulative averages
+                double avgComparisons = 0.0;
+                double avgExchanges = 0.0;
+                double avgTime = 0.0;
+                boolean failed = false;
+                trialStart: for (int trialNum = 0; trialNum < trialCount; trialNum++) {
+                    // For each trial, lets generate a new deep copy of the list
+                    int[] newArray = new int[passedArray.length];
+                    for (int i = 0; i < passedArray.length; i++) {
+                        newArray[i] = passedArray[i]; // To get a deep copy
+                    }
+
+                    if (useRandomArray) {
+                        // Shuffle the array for this trial
+                        newArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
+                    }
+
+                    // Lets sort the array and time it in nanoseconds
+                    long totalTime = System.nanoTime();
+                    SortResult result = algorithm.sort(newArray);
+                    totalTime = System.nanoTime() - totalTime;
+
+                    // Double Check the array is sorted correctly
+                    int[] sortedArr = result.sortedArray();
+                    for (int i = 0; i < sortedArr.length - 1; i++) {
+                        // If the current element is greater than the next element, it is not sorted
+                        if (sortedArr[i] > sortedArr[i + 1]) {
+                            failed = true;
+                            break trialStart;
+                        }
+                    }
+
+                    // Update averages using cumulative average
+                    avgComparisons += (result.numberOfComparisons() - avgComparisons) / (trialNum
+                            + 1.0);
+                    avgExchanges += (result.numberOfExchanges() - avgExchanges) / (trialNum +
+                            1.0);
+                    avgTime += (totalTime - avgTime) / (trialNum + 1.0);
+                    // USE CUMULARIVE AVERAGE IN CASE WE USE SUPER HUGE NUMBERS TO AVOID OVERFLOW
+
+                    // Only print out when the percent meaningfully changes so we're
+                    // not printing the same line over and over if its slow
+                    if (trialCount < 1000 || (trialNum % Math.max(1, trialCount / 100) == 0)) {
+                        // Equivelant to \r
+                        System.out.print("\u001b[2K\u001b[G");
+
+                        String progress = String.format("[%d/%d] (%d%%)", trialNum + 1,
+                                trialCount,
+                                (int) ((trialNum + 1) * 100.0 / trialCount));
+                        System.out.format(formatString + " %s", DataGenerator.getStylizedAlgorithmName(algorithm),
+                                (int) avgComparisons,
+                                (int) avgExchanges, (int) avgTime, progress);
+                        System.out.flush();
+                    }
+                }
+                // Equivelant to \r
+                System.out.print("\u001b[2K\u001b[G");
+                if (failed) {
+                    int padding = Math.max(0, (Math.max(maxNameLength, 22)) - algorithm.getName().length() + 5);
+                    StringBuilder paddingStr = new StringBuilder();
+                    for (int i = 0; i < padding; i++) {
+                        paddingStr.append(" ");
+                    }
+                    System.out.println("| Error: " + algorithm.getName() + " failed to sort the list correctly!"
+                            + paddingStr.toString()
+                            + "|");
+                } else {
+                    System.out.format(formatString + "\n", DataGenerator.getStylizedAlgorithmName(algorithm),
+                            (int) avgComparisons, (int) avgExchanges, (int) avgTime);
+                }
+
+            }
+            int width = 2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2;
+            for (int i = 0; i < width; i++) {
+                System.out.print("-");
+            }
+            System.out.println();
+        } finally {
+            System.out.print("\u001b[?25h"); // Always show cursor again
+            System.out.flush();
         }
-        System.out.println("-".repeat(2 + Math.max(maxNameLength, 22) + 3 + 13 + 3 + 11 + 3 + 13 + 2));
     }
 
     public static void main(String[] args) throws Exception {
+        // Register a shutdown hook to ensure cursor is always shown, since we do hide it during runtime
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // Because I know you're all so impatient and will definitely Ctrl+C This...
+            System.out.print("\u001b[?25h"); // Show cursor
+            System.out.flush();
+            // Sometimes this prints out Maven warnings and errors but I promise you everything will just be okay
+        }));
+
         int numberOfTrials = 1000;
         int listSize = 500;
 
