@@ -276,16 +276,81 @@ public class DataGenerator {
                 break;
         }
 
-        // TODO: Check if other environments need this...? Or if there's a better solution...
-        boolean isVSCode = "vscode".equalsIgnoreCase(System.getenv("TERM_PROGRAM"));
-        if (isVSCode || emoji.equals(String.valueOf(Character.toChars(0x1F39B)))) { 
-            // Special case for these, which need padding anyways
-            return emoji + leadingSpace + " " + baseName + trailingSpace; 
-            // Extra Padding for new emojis in VS Code
-        } else {
-            return emoji + " " + baseName; 
-            // Standard padding for other environments, which should be fine for most terminals
+        // Better approach than checking specific environment: compute the "display"
+        // width of the emoji using a Unicode-width heuristic (treat CJK and emoji
+        // ranges as wide (2), combining marks as zero-width, everything else as 1).
+        // This won't perfectly match every terminal/font (some render emoji as 1 or 2
+        // columns differently), but it's a deterministic, cross-platform heuristic
+        // that avoids ad-hoc environment checks like TERM_PROGRAM=="vscode".
+
+        int emojiWidth = strWidth(emoji);
+        final int targetEmojiCellWidth = 2; // reserve 2 columns for emoji-ish symbols
+
+        // We want at least one space between the emoji and the algorithm name. If the
+        // emoji is only 1 cell wide, add an extra padding space so names align.
+        int extraPadding = Math.max(1, targetEmojiCellWidth - emojiWidth + 1);
+        String padding = repeat(' ', extraPadding);
+
+        return emoji + leadingSpace + padding + baseName + trailingSpace;
+    }
+
+    // --- Unicode width helpers (simple heuristic) ---
+
+    private static int strWidth(String s) {
+        if (s == null || s.isEmpty()) return 0;
+        int width = 0;
+        for (int i = 0; i < s.length(); ) {
+            int cp = s.codePointAt(i);
+            width += charWidth(cp);
+            i += Character.charCount(cp);
         }
+        return width;
+    }
+
+    private static int charWidth(int cp) {
+        // 0 for control characters
+        if (cp == 0) return 0;
+        if (cp < 32 || (cp >= 0x7f && cp < 0xa0)) return 0;
+
+        int type = Character.getType(cp);
+        if (type == Character.NON_SPACING_MARK || type == Character.ENCLOSING_MARK) {
+            return 0; // combining marks
+        }
+
+        if (isWide(cp)) return 2;
+        return 1;
+    }
+
+    private static boolean isWide(int cp) {
+        // A compact set of ranges that are typically rendered wide in monospace
+        // terminals: CJK, Hangul, Hiragana, Katakana, and many emoji/pictograph ranges.
+        // This is a heuristic and won't be perfect for every environment.
+        if (cp >= 0x1100 && cp <= 0x115F) return true;
+        if (cp >= 0x2329 && cp <= 0x232A) return true;
+        if (cp >= 0x2E80 && cp <= 0xA4CF) return true; // includes CJK
+        if (cp >= 0xAC00 && cp <= 0xD7A3) return true; // Hangul
+        if (cp >= 0xF900 && cp <= 0xFAFF) return true;
+        if (cp >= 0xFE10 && cp <= 0xFE19) return true;
+        if (cp >= 0xFE30 && cp <= 0xFE6F) return true;
+        if (cp >= 0xFF00 && cp <= 0xFF60) return true;
+        if (cp >= 0xFFE0 && cp <= 0xFFE6) return true;
+
+        // Emoji/pictograph ranges
+        if (cp >= 0x1F300 && cp <= 0x1F64F) return true;
+        if (cp >= 0x1F900 && cp <= 0x1F9FF) return true;
+        if (cp >= 0x1F680 && cp <= 0x1F6FF) return true;
+        if (cp >= 0x1F1E6 && cp <= 0x1F1FF) return true; // regional indicators
+        if (cp >= 0x2600 && cp <= 0x26FF) return true;
+        if (cp >= 0x2700 && cp <= 0x27BF) return true;
+
+        return false;
+    }
+
+    private static String repeat(char c, int times) {
+        if (times <= 0) return "";
+        StringBuilder sb = new StringBuilder(times);
+        for (int i = 0; i < times; i++) sb.append(c);
+        return sb.toString();
     }
 
 }
