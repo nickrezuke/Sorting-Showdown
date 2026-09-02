@@ -19,7 +19,7 @@ public class QueueLinkedList implements ADTQueue {
 
     public void enqueue(int newNumber) throws QueueFullException { // Even though this will never be full...
         LinkedListNode newNode = new LinkedListNode(newNumber);
-        if(this.isEmpty()) {
+        if (this.isEmpty()) {
             front = newNode;
         } else {
             rear.setNext(newNode);
@@ -29,7 +29,7 @@ public class QueueLinkedList implements ADTQueue {
     }
 
     public int dequeue() {
-        if(front == null) {
+        if (front == null) {
             throw new QueueEmptyException("Queue is empty. Cannot dequeue.");
         }
         int val = front.getData();

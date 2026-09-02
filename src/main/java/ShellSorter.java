@@ -37,7 +37,7 @@ class ShellSorter implements Sorter {
             int j = i;
             while (j > h - 1) {
                 numberOfComparisons++; // Count this as a comparison
-                if(array[j - h] > current) {
+                if (array[j - h] > current) {
                     array[j] = array[j - h];
                     j = j - h;
                     numberOfExchanges++; // Count this as an exchange
@@ -48,7 +48,7 @@ class ShellSorter implements Sorter {
             array[j] = current;
             // Count this last move as an exchange if we actually moved the current element
             if (j != i) {
-                numberOfExchanges++;    
+                numberOfExchanges++;
             }
         }
     }

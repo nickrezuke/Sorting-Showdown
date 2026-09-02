@@ -9,33 +9,22 @@ class InsertionSorter implements Sorter {
         int numberOfExchanges = 0;
 
         for (int index = 1; index < numItems; index++) {
-            // everything to the left of index is sorted
-
-            // Lets consider the item at index, and insert it into the sorted portion
+            // Everything to the left of index is sorted
             int key = array[index];
-
-            // j represents the index of the last item in the sorted portion
             int j = index - 1;
 
-            while (j >= 0 && array[j] > key) {
-                // Perform Exchanges as the while loop condition, which is already inside a for
-                // loop (Meaning O(n^2) comparisons and exchanges in average case)
+            while (j >= 0) {
+                // Count the comparison about to happen between array[j] and key
                 numberOfComparisons++;
 
-                // Shift the item at j to the right (Happens inside both loops so O(n^2)
-                // exchanges in average case)
-                numberOfExchanges++;
-                array[j + 1] = array[j];
-                j = j - 1;
-            }
-            // If the above while loop fails because of the array[j] > key condition, it
-            // still made a comparison that was false,
-            // specifically it performed a comparison and found that array[j] <= key,
-            // meaning that the loop never enters,
-            // so we still need to count that failed comparison by adding one if that was
-            // the case.
-            if (j >= 0) {
-                numberOfComparisons++;
+                if (array[j] > key) {
+                    array[j + 1] = array[j];
+                    numberOfExchanges++;
+                    j--;
+                } else {
+                    // The element is in the correct position relative to the sorted subarray
+                    break;
+                }
             }
 
             // Insert the key into its proper location

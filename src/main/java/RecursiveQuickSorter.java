@@ -11,51 +11,37 @@ class RecursiveQuickSorter implements Sorter {
         int a = array[low];
         int b = array[mid];
         int c = array[high];
-        if ((a <= b && b <= c) || (c <= b && b <= a)) return mid;
-        if ((b <= a && a <= c) || (c <= a && a <= b)) return low;
+
+        if ((a <= b && b <= c) || (c <= b && b <= a)) {
+            return mid;
+        }
+        if ((b <= a && a <= c) || (c <= a && a <= b)) {
+            return low;
+        }
         return high;
     }
 
     private int partition(int[] array, int low, int high) {
         int pivotIdx = findPivotIndex(array, low, high);
-        
-        swap(array, pivotIdx, low);
-        int pivotValue = array[low];
 
-        while (low < high) {
-            // Scan from right to left
-            while (pivotValue < array[high] && low < high) {
-                high--;
-                numberOfComparisons++;
-            }
-            if (low < high) {
-                numberOfComparisons++;
-            }
-            if (high != low) {
-                array[low] = array[high];
-                numberOfExchanges++;
-                low++;
-            }
+        // Hide the pivot value at the end of the partition range
+        swap(array, pivotIdx, high);
+        int pivotValue = array[high];
 
-            // Scan from left to right
-            while (array[low] < pivotValue && low < high) {
-                low++;
-                numberOfComparisons++;
-            }
-            if (low < high) {
-                numberOfComparisons++;
-            }
-            if (high != low) {
-                array[high] = array[low];
-                numberOfExchanges++;
-                high--;
+        int i = low - 1; // Index of smaller element
+
+        for (int j = low; j < high; j++) {
+            numberOfComparisons++;
+            if (array[j] < pivotValue) {
+                i++;
+                swap(array, i, j);
             }
         }
-        
-        array[high] = pivotValue;
-        numberOfExchanges++; 
-        
-        return high; 
+
+        // Place the pivot into its final correct sorted position
+        swap(array, i + 1, high);
+
+        return i + 1;
     }
 
     private void swap(int[] array, int i, int j) {
@@ -70,7 +56,12 @@ class RecursiveQuickSorter implements Sorter {
     public SortResult sort(int[] array) {
         numberOfComparisons = 0;
         numberOfExchanges = 0;
-        quicksort(array, 0, array.length - 1);
+
+        // Handle edge cases for empty or single-element arrays
+        if (array != null && array.length > 1) {
+            quicksort(array, 0, array.length - 1);
+        }
+
         return new SortResult(array, numberOfComparisons, numberOfExchanges);
     }
 

@@ -7,14 +7,14 @@ class CycleSorter implements Sorter {
         int numComparisons = 0;
         int numExchanges = 0;
 
-        for(int i = 0; i < array.length - 1; i++) {
+        for (int i = 0; i < array.length - 1; i++) {
             int current = array[i];
+            int pos = i;
 
             // Find the correct position to place this item
-            int pos = i;
-            for(int j = i + 1; j < array.length; j++) {
-                numComparisons++; // Comparison on next line
-                if(array[j] < current) {
+            for (int j = i + 1; j < array.length; j++) {
+                numComparisons++;
+                if (array[j] < current) {
                     pos++;
                 }
             }
@@ -25,14 +25,17 @@ class CycleSorter implements Sorter {
             }
 
             // Ignore any duplicate elements
-            numComparisons++; // We compare on the next line
-            while(current == array[pos]) {
-                pos++;
-                numComparisons++; // Count the comparison that occurs on the next itteration
+            while (true) {
+                numComparisons++; // Count the upcoming array boundary equality check
+                if (current == array[pos]) {
+                    pos++;
+                } else {
+                    break;
+                }
             }
 
             // Put the item in its correct place
-            if(pos != i) {
+            if (pos != i) {
                 int temp = array[pos];
                 array[pos] = current;
                 current = temp;
@@ -40,27 +43,29 @@ class CycleSorter implements Sorter {
             }
 
             // Rotate the rest of the cycle
-            while(pos != i) {
-                pos = i;
+            while (pos != i) {
+                pos = i; // Find where to put the element
 
-                // Find where to put the element
-                for(int k = i + 1; k < array.length; k++) {
-                    numComparisons++; // Comparison on next line
-                    if(array[k] < current) {
+                for (int k = i + 1; k < array.length; k++) {
+                    numComparisons++;
+                    if (array[k] < current) {
                         pos++;
                     }
                 }
 
                 // Ignore any duplicates
-                numComparisons++; // We compare on the next line
-                while(array[pos] == current) {
-                    pos++;
-                    numComparisons++; // Count the comparison that occurs on the next itteration
+                while (true) {
+                    numComparisons++; // Count the upcoming array boundary equality check
+                    if (array[pos] == current) {
+                        pos++;
+                    } else {
+                        break;
+                    }
                 }
 
                 // Put the item to its right position
                 numComparisons++;
-                if(current != array[pos]) {
+                if (current != array[pos]) {
                     int temp = array[pos];
                     array[pos] = current;
                     current = temp;

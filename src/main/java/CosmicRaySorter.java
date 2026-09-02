@@ -9,16 +9,17 @@ class CosmicRaySorter implements Sorter {
 
         boolean isSorted = false;
 
-        while(!isSorted) {
+        while (!isSorted) {
             // Check if the list is currently sorted
             isSorted = true;
-            for(int i = 0; i < array.length - 1; i++) {
-                if(array[i] > array [i + 1]) {
+            for (int i = 0; i < array.length - 1; i++) {
+                if (array[i] > array[i + 1]) {
                     isSorted = false;
                 }
             }
 
-            // Wait for a little bit, to allow some time for a potential hardware malfunction to have changed something
+            // Wait for a little bit, to allow some time for a 
+            // potential hardware malfunction to have changed something
             try {
                 Thread.sleep(1); // Wait for a millisecond before checking again
             } catch (InterruptedException e) {

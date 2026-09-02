@@ -9,7 +9,7 @@ class BinaryInsertionSorter implements Sorter {
         int numberOfExchanges = 0;
 
         for (int index = 1; index < numItems; index++) {
-            // everything to the left of index is sorted
+            // Everything to the left of index is sorted
             int key = array[index];
 
             // Binary Search to find the correct insertion position
@@ -26,12 +26,13 @@ class BinaryInsertionSorter implements Sorter {
                     low = mid + 1;
                 }
             }
+
             // 'low' is now the index where 'key' belongs
             // Shift elements to the right to make room for the key
             int j = index - 1;
             while (j >= low) {
-                numberOfExchanges++; // Track shifts as exchanges
                 array[j + 1] = array[j];
+                numberOfExchanges++; // Tracks single-element array movements/shifts
                 j--;
             }
 

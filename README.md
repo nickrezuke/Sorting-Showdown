@@ -9,7 +9,7 @@ Sorting Showdown is a Java-based application designed to benchmark and compare t
 You will need **Java 8 or higher** (I had originally built the project with Java 25 but decided to lower that, so forgive me for / tell me of any compatability issues).
 To run the project, Apache Maven is preferred. The tests use JUnit 5.
 
-## Download and Setup
+## Download, Setup, and Running the Project
 
 1. **Clone the Repository:** Download the project files to your local machine using Git:
    ```
@@ -22,25 +22,26 @@ To run the project, Apache Maven is preferred. The tests use JUnit 5.
    cd Sorting-Showdown
    ```
 
-## Running the Project (with Maven)
+3. Now you're ready to **Run the Project:** (either with or without maven, as outlined below...)
+
+### Running the Project (with Maven)
 
 Maven handles all the dependencies and compiling for you. Use the following commands in your terminal inside the project root folder.
 
-1. **Build the Project:** Compile the code and package it into a runnable format.
+4. **Build the Project:** Compile the code and package it into a runnable format.
    ```
    mvn clean package
    ```
 
-2. **Run the Application:** Execute the main application class.
+5. **Run the Application:** Execute the main application class.
    ```
    mvn exec:java
    ```
 
-## Running the Project (without Maven)
+### Running the Project (without Maven)
 
 This project can still be utilized if your computer doesn't have Maven.
-To run this project without Maven, consider the .java files from src/main/java separately, and
-run this shortcut multicommand from within the base Sorting Showdown folder:
+To run this project without Maven, run this from the base Sorting Showdown folder:
    ```
    cd src/main/java && javac *.java && java SortingShowdown ; rm *.class && rm -rf target ; cd ../../..
    ```

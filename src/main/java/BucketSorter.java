@@ -1,7 +1,7 @@
 public class BucketSorter implements Sorter {
     private int numberOfExchanges;
     private int numberOfComparisons;
-    
+
     public String getName() {
         return "Bucket Sort";
     }
@@ -18,7 +18,8 @@ public class BucketSorter implements Sorter {
         int min = array[0];
         int max = array[0];
         for (int i = 1; i < array.length; i++) {
-            // Don't track these comparisons, as they are just for finding the min and max values, not for sorting
+            // Don't track these comparisons, as they are just for 
+            // finding the min and max values, not for sorting
             if (array[i] < min) {
                 min = array[i];
             } else if (array[i] > max) {
@@ -27,7 +28,7 @@ public class BucketSorter implements Sorter {
         }
 
         // Astromically rare, but somehow if all elements are identical, no need to sort
-        if(min == max) {
+        if (min == max) {
             return new SortResult(array, numberOfComparisons, numberOfExchanges);
         }
 
@@ -37,36 +38,36 @@ public class BucketSorter implements Sorter {
 
         // Count frequencies (Scatter phase A)
         int[] bucketCounts = new int[numBuckets];
-        for(int i = 0; i < array.length; i++) {
+        for (int i = 0; i < array.length; i++) {
             int bucketIndex = getBucketIndex(array[i], min, range, numBuckets);
             bucketCounts[bucketIndex]++;
         }
 
-        // Calculate starting memory positions for each bucket 
+        // Calculate starting memory positions for each bucket
         int[] bucketOffsets = new int[numBuckets];
         bucketOffsets[0] = 0;
-        for(int i = 1; i < numBuckets; i++) {
+        for (int i = 1; i < numBuckets; i++) {
             bucketOffsets[i] = bucketOffsets[i - 1] + bucketCounts[i - 1];
         }
 
         // Make flat temp array (Scatter phase B)
         int[] tempArray = new int[array.length];
         int[] currentOffsets = new int[numBuckets];
-        for(int i = 0; i < numBuckets; i++) {
+        for (int i = 0; i < numBuckets; i++) {
             currentOffsets[i] = bucketOffsets[i];
         }
 
-        for(int i = 0; i < array.length; i++) {
+        for (int i = 0; i < array.length; i++) {
             int bucketIndex = getBucketIndex(array[i], min, range, numBuckets);
             tempArray[currentOffsets[bucketIndex]++] = array[i];
             numberOfExchanges++; // Finally we track this
         }
 
         // Sort individual sections
-        for(int i = 0; i < numBuckets; i++) {
+        for (int i = 0; i < numBuckets; i++) {
             int start = bucketOffsets[i];
             int size = bucketCounts[i];
-            if(size > 1) {
+            if (size > 1) {
                 // Do Insertion Sort and record the comparisons and exchanges
                 int[] updatedValues = insertionSort(tempArray, start, start + size - 1);
                 numberOfComparisons += updatedValues[0];
@@ -85,12 +86,12 @@ public class BucketSorter implements Sorter {
     private int[] insertionSort(int[] array, int low, int high) {
         int numberOfComparisons = 0;
         int numberOfExchanges = 0;
-        for(int i = low + 1; i <= high; i++) {
+        for (int i = low + 1; i <= high; i++) {
             int key = array[i];
             int j = i - 1;
-            while(j >= low) {
+            while (j >= low) {
                 numberOfComparisons++; // Upcoming comparison
-                if(array[j] > key) {
+                if (array[j] > key) {
                     array[j + 1] = array[j];
                     numberOfExchanges++;
                     j--;
@@ -98,7 +99,7 @@ public class BucketSorter implements Sorter {
                     break;
                 }
             }
-            if(j + 1 != i) {
+            if (j + 1 != i) {
                 // Count it if the key actually moved positions
                 array[j + 1] = key;
                 numberOfExchanges++;

@@ -59,6 +59,7 @@ public class SortingShowdown {
                 new EliminationSorter(),
                 new CountingSorter(),
                 new GravitySorter(),
+                new CantBelieveItCanSorter(),
                 // new SlowSorter(), // PLEASE DO NOT USE
                 // new StoogeSorter(), // PLEASE DO NOT USE
                 // new SleepSorter(), // PLEASE DO NOT USE
@@ -95,9 +96,6 @@ public class SortingShowdown {
     }
 
     public static void runSortsOnArray(int[] passedArray, int trialCount, String fileName, boolean useRandomArray) {
-
-        int warmupTrials = 10000;
-
         // Determine the length of the longest sorting algorithm name
         // for the calculation of the table formatting dimensions
         int maxNameLength = 0;
@@ -138,10 +136,17 @@ public class SortingShowdown {
         }
         System.out.println();
         for (Sorter algorithm : algorithms) {
-            // First, warmup
             String stylizedName = DataGenerator.getStylizedAlgorithmName(algorithm);
 
+            // Flag for if we ever failed to sort an array correctly
+            boolean failed = false;
+
+            // First, warmup the JIT compiler
+            int warmupTrials = 10000;
             int lastPercent = -1;
+            System.out.format("\r" + formatString + " %s\u001b[K", stylizedName, "-", "-", "-",
+                    "[Warming up JIT Compiler... 0%]");
+            System.out.flush();
             for (int w = 0; w < warmupTrials; w++) {
                 int[] warmupArray = new int[passedArray.length];
                 System.arraycopy(passedArray, 0, warmupArray, 0, passedArray.length);
@@ -149,7 +154,23 @@ public class SortingShowdown {
                 if (useRandomArray) {
                     warmupArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
                 }
-                algorithm.sort(warmupArray);
+
+                // Store the result instead of just calling algorithm.sort()
+                SortResult result = algorithm.sort(warmupArray);
+
+                // Check if the array is sorted correctly during warmup
+                int[] sortedArr = result.sortedArray();
+                for (int i = 0; i < sortedArr.length - 1; i++) {
+                    if (sortedArr[i] > sortedArr[i + 1]) {
+                        failed = true;
+                        break;
+                    }
+                }
+
+                // Break out of the warmup loop immediately on failure
+                if (failed) {
+                    break;
+                }
 
                 int currentPercent = (int) (w * 100.0 / warmupTrials);
                 // Only print if the integer percentage has actually ticked upward
@@ -163,52 +184,54 @@ public class SortingShowdown {
                 }
             }
 
-            // Print initial actual run line safely using carriage return
-            System.out.format("\r" + formatString + " %s\u001b[K", stylizedName, "-", "-", "-",
-                    "[0/" + trialCount + "] (0%)");
-            System.out.flush();
-
             double avgComparisons = 0.0;
             double avgExchanges = 0.0;
             double avgTime = 0.0;
-            boolean failed = false;
 
-            trialStart: for (int trialNum = 0; trialNum < trialCount; trialNum++) {
-                int[] newArray = new int[passedArray.length];
-                System.arraycopy(passedArray, 0, newArray, 0, passedArray.length);
+            // Only run the actual trials if the warmup was successful
+            if (!failed) {
+                // Print initial actual run line safely using carriage return
+                System.out.format("\r" + formatString + " %s\u001b[K", stylizedName, "-", "-", "-",
+                        "[0/" + trialCount + "] (0%)");
+                System.out.flush();
 
-                if (useRandomArray) {
-                    newArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
-                }
+                trialStart: for (int trialNum = 0; trialNum < trialCount; trialNum++) {
+                    int[] newArray = new int[passedArray.length];
+                    System.arraycopy(passedArray, 0, newArray, 0, passedArray.length);
 
-                long totalTime = System.nanoTime();
-                SortResult result = algorithm.sort(newArray);
-                totalTime = System.nanoTime() - totalTime;
-
-                int[] sortedArr = result.sortedArray();
-                for (int i = 0; i < sortedArr.length - 1; i++) {
-                    if (sortedArr[i] > sortedArr[i + 1]) {
-                        failed = true;
-                        break trialStart;
+                    if (useRandomArray) {
+                        newArray = FisherYatesShuffler.shuffleArray(passedArray).shuffledArray();
                     }
-                }
 
-                avgComparisons += (result.numberOfComparisons() - avgComparisons) / (trialNum + 1.0);
-                avgExchanges += (result.numberOfExchanges() - avgExchanges) / (trialNum + 1.0);
-                avgTime += (totalTime - avgTime) / (trialNum + 1.0);
+                    long totalTime = System.nanoTime();
+                    SortResult result = algorithm.sort(newArray);
+                    totalTime = System.nanoTime() - totalTime;
 
-                if (trialCount < 1000 || (trialNum % Math.max(1, trialCount / 100) == 0)) {
-                    String progress = String.format("[Sorting trial: %d/%d] (%d%%)", trialNum + 1, trialCount,
-                            (int) ((trialNum + 1) * 100.0 / trialCount));
+                    int[] sortedArr = result.sortedArray();
+                    for (int i = 0; i < sortedArr.length - 1; i++) {
+                        if (sortedArr[i] > sortedArr[i + 1]) {
+                            failed = true;
+                            break trialStart;
+                        }
+                    }
 
-                    System.out.format("\r" + formatString + " %s\u001b[K", stylizedName, (int) avgComparisons,
-                            (int) avgExchanges, (int) avgTime, progress);
-                    System.out.flush();
+                    avgComparisons += (result.numberOfComparisons() - avgComparisons) / (trialNum + 1.0);
+                    avgExchanges += (result.numberOfExchanges() - avgExchanges) / (trialNum + 1.0);
+                    avgTime += (totalTime - avgTime) / (trialNum + 1.0);
+
+                    if (trialCount < 1000 || (trialNum % Math.max(1, trialCount / 100) == 0)) {
+                        String progress = String.format("[Sorting trial: %d/%d] (%d%%)", trialNum + 1, trialCount,
+                                (int) ((trialNum + 1) * 100.0 / trialCount));
+
+                        System.out.format("\r" + formatString + " %s\u001b[K", stylizedName, (int) avgComparisons,
+                                (int) avgExchanges, (int) avgTime, progress);
+                        System.out.flush();
+                    }
                 }
             }
 
-            // Clear the current temporary progress text cleanly before finalizing the table
-            // row
+            // Clear the current temporary progress text cleanly
+            // before finalizing the table row
             System.out.print("\r\u001b[K");
 
             if (failed) {
